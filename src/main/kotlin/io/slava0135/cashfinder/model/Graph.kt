@@ -21,7 +21,10 @@ class Graph(val width: Int, val height: Int) {
     val grid = Array(width) { Array<Node?>(height) { null } }
     val walls = Array(width) { Array<Node?>(height) { null } }
 
-    fun getLinkedNodes(): List<Node> {
+    val start: Node? = null
+    val end: Node? = null
+
+    override fun toString(): String {
         TODO()
     }
 }
