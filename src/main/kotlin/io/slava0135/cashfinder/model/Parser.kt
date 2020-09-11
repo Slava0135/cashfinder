@@ -30,13 +30,13 @@ fun parse(lines: List<String>): Graph {
                     if (value.toIntOrNull() != null) graph.grid[x][y] = Node(value.toInt(), Position(x, y))
                     else if (value == "S") {
                         if (graph.start != null) throw IllegalArgumentException("Multiple start tiles")
-                        val node = Node(0, Position(x, y))
+                        val node = Node(0, Position(x, y)).apply { isStart = true }
                         graph.grid[x][y] = node
                         graph.start = node
                     }
                     else if (value == "F") {
                         if (graph.end != null) throw IllegalArgumentException("Multiple finish tiles")
-                        val node = Node(0, Position(x, y))
+                        val node = Node(0, Position(x, y)).apply { isEnd = true }
                         graph.grid[x][y] = node
                         graph.end = node
                     } else throw IllegalArgumentException("Invalid tile x:$x y:$y")
@@ -66,6 +66,14 @@ fun parse(lines: List<String>): Graph {
     }
     if (graph.start == null) throw IllegalArgumentException("No start present")
     if (graph.end == null) throw IllegalArgumentException("No end present")
+    for (y in 0 until graph.height) {
+        graph.walls[0][y].left = true
+        graph.walls[graph.width - 1][y].right = true
+    }
+    for (x in 0 until graph.width) {
+        graph.walls[x][0].up = true
+        graph.walls[x][graph.height - 1].down = false
+    }
     graph.link()
     return graph
 }
@@ -112,5 +120,7 @@ fun validate(lines: List<String>) {
 
 fun main() {
     val lines = {}.javaClass.getResource("/test1").readText().split("\n")
-    println(parse(lines))
+    val result = parse(lines)
+    println(result.walls[0][0])
+    result.toLines().forEach { println(it) }
 }
