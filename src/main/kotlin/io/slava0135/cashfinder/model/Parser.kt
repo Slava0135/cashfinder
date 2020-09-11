@@ -26,24 +26,23 @@ fun parse(lines: List<String>): Graph {
         while (col < len) {
             if (col == cross) {
                 if (buffer.isNotEmpty()) {
-                    x++
                     val value = buffer.replace(Regex("""\s"""), "")
                     if (value.toIntOrNull() != null) graph.grid[x][y] = Node(value.toInt(), Position(x, y))
                     else if (value == "S") {
                         if (graph.start != null) throw IllegalArgumentException("Multiple start tiles")
                         val node = Node(0, Position(x, y))
                         graph.grid[x][y] = node
-                        graph.end = node
+                        graph.start = node
                     }
                     else if (value == "F") {
                         if (graph.end != null) throw IllegalArgumentException("Multiple finish tiles")
                         val node = Node(0, Position(x, y))
                         graph.grid[x][y] = node
                         graph.end = node
-                    } else throw IllegalArgumentException("Empty tile x:$x y:$y")
+                    } else throw IllegalArgumentException("Invalid tile x:$x y:$y")
                     buffer.clear()
-                }
-                if (lines[row][col] == '|') {
+                    x++
+                } else if (lines[row][col] == '|') {
                     graph.walls[max(x, 0)][y].right = true
                     graph.walls[min(x, len - 1)][y].left = true
                 }
@@ -62,6 +61,7 @@ fun parse(lines: List<String>): Graph {
             }
             col++
         }
+        x = 0
         y++
     }
     if (graph.start == null) throw IllegalArgumentException("No start present")
@@ -112,5 +112,5 @@ fun validate(lines: List<String>) {
 
 fun main() {
     val lines = {}.javaClass.getResource("/test1").readText().split("\n")
-    println(parse(lines).toList())
+    println(parse(lines))
 }

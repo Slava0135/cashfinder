@@ -17,7 +17,7 @@ class Wall {
 }
 
 class Graph(val width: Int, val height: Int) {
-    val grid = Array(width) { Array<Node>(height) { Node(0, Position(-1, -1)) } }
+    val grid = Array(width) { Array(height) { Node(0, Position(-1, -1)) } }
     val walls = Array(width) { Array(height) { Wall() } }
 
     var start: Node? = null
