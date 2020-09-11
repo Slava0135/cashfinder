@@ -1,7 +1,11 @@
 package io.slava0135.cashfinder.model
 
+import java.lang.Integer.max
+import java.lang.Integer.min
+
 fun parse(lines: List<String>): Graph {
     validate(lines)
+    val len = lines[0].length
 
     //reading crosses positions
     val crosses = mutableSetOf<Int>()
@@ -12,6 +16,58 @@ fun parse(lines: List<String>): Graph {
     }
 
     val graph = Graph(crosses.size - 1, lines.size / 2)
+    var x = 0
+    var y = 0
+    for (row in 1 until lines.size step 2) {
+        val iterator = crosses.iterator()
+        var cross = iterator.next()
+        var col = 0
+        val buffer = StringBuilder()
+        while (col < len) {
+            if (col == cross) {
+                if (buffer.isNotEmpty()) {
+                    x++
+                    val value = buffer.replace(Regex("""\s"""), "")
+                    if (value.toIntOrNull() != null) graph.grid[x][y] = Node(value.toInt(), Position(x, y))
+                    else if (value == "S") {
+                        if (graph.start != null) throw IllegalArgumentException("Multiple start tiles")
+                        val node = Node(0, Position(x, y))
+                        graph.grid[x][y] = node
+                        graph.end = node
+                    }
+                    else if (value == "F") {
+                        if (graph.end != null) throw IllegalArgumentException("Multiple finish tiles")
+                        val node = Node(0, Position(x, y))
+                        graph.grid[x][y] = node
+                        graph.end = node
+                    } else throw IllegalArgumentException("Empty tile x:$x y:$y")
+                    buffer.clear()
+                }
+                if (lines[row][col] == '|') {
+                    graph.walls[max(x, 0)][y].right = true
+                    graph.walls[min(x, len - 1)][y].left = true
+                }
+                if (!iterator.hasNext()) break
+                cross = iterator.next()
+            } else {
+                if (buffer.isEmpty()) {
+                    if (lines[row - 1][col] == '-') {
+                        graph.walls[x][y].up = true
+                    }
+                    if (lines[row + 1][col] == '-') {
+                        graph.walls[x][y].down = true
+                    }
+                }
+                buffer.append(lines[row][col])
+            }
+            col++
+        }
+        y++
+    }
+    if (graph.start == null) throw IllegalArgumentException("No start present")
+    if (graph.end == null) throw IllegalArgumentException("No end present")
+    graph.link()
+    return graph
 }
 
 private val rowRegex = Regex("""([+](-+|\s+))+[+]""")
@@ -56,5 +112,5 @@ fun validate(lines: List<String>) {
 
 fun main() {
     val lines = {}.javaClass.getResource("/test1").readText().split("\n")
-    println(validate(lines))
+    println(parse(lines).toList())
 }
