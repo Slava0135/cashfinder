@@ -1,13 +1,8 @@
 package io.slava0135.cashfinder.model
 
-import java.lang.Integer.max
-import java.lang.Integer.min
-
 fun parse(lines: List<String>): Graph {
     validate(lines)
-    val len = lines[0].length
 
-    //reading crosses positions
     val crosses = mutableSetOf<Int>()
     for (index in lines[0].indices) {
         if (lines[0][index] == '+') {
@@ -15,16 +10,24 @@ fun parse(lines: List<String>): Graph {
         }
     }
 
+    val len = lines[0].length
     val graph = Graph(crosses.size - 1, lines.size / 2)
     var x = 0
     var y = 0
     for (row in 1 until lines.size step 2) {
         val iterator = crosses.iterator()
         var cross = iterator.next()
-        var col = 0
         val buffer = StringBuilder()
+
+        var col = 0
         while (col < len) {
             if (col == cross) {
+                if (lines[row][col] == '|' && col != 0) {
+                    if (x < graph.width - 1) {
+                        graph.walls[x + 1][y].left = true
+                    }
+                    graph.walls[x][y].right = true
+                }
                 if (buffer.isNotEmpty()) {
                     val value = buffer.replace(Regex("""\s"""), "")
                     if (value.toIntOrNull() != null) graph.grid[x][y] = Node(value.toInt(), Position(x, y))
@@ -42,12 +45,10 @@ fun parse(lines: List<String>): Graph {
                     } else throw IllegalArgumentException("Invalid tile x:$x y:$y")
                     buffer.clear()
                     x++
-                } else if (lines[row][col] == '|') {
-                    graph.walls[max(x, 0)][y].right = true
-                    graph.walls[min(x, len - 1)][y].left = true
                 }
-                if (!iterator.hasNext()) break
-                cross = iterator.next()
+                if (iterator.hasNext()) {
+                    cross = iterator.next()
+                } else break
             } else {
                 if (buffer.isEmpty()) {
                     if (lines[row - 1][col] == '-') {
@@ -64,15 +65,16 @@ fun parse(lines: List<String>): Graph {
         x = 0
         y++
     }
+    graph.toLines().forEach { println(it) }
     if (graph.start == null) throw IllegalArgumentException("No start present")
     if (graph.end == null) throw IllegalArgumentException("No end present")
-    for (y in 0 until graph.height) {
-        graph.walls[0][y].left = true
-        graph.walls[graph.width - 1][y].right = true
+    for (i in 0 until graph.height) {
+        graph.walls[0][i].left = true
+        graph.walls[graph.width - 1][i].right = true
     }
-    for (x in 0 until graph.width) {
-        graph.walls[x][0].up = true
-        graph.walls[x][graph.height - 1].down = false
+    for (i in 0 until graph.width) {
+        graph.walls[i][0].up = true
+        graph.walls[i][graph.height - 1].down = true
     }
     graph.link()
     return graph
@@ -121,6 +123,5 @@ fun validate(lines: List<String>) {
 fun main() {
     val lines = {}.javaClass.getResource("/test1").readText().split("\n")
     val result = parse(lines)
-    println(result.walls[0][0])
     result.toLines().forEach { println(it) }
 }
