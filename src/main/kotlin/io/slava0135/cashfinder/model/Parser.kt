@@ -73,12 +73,11 @@ fun parse(lines: List<String>): Graph {
         graph.walls[i][0].up = true
         graph.walls[i][graph.height - 1].down = true
     }
-    graph.link()
     return graph
 }
 
-private val rowRegex = Regex("""([+](-+|\s+))+[+]""")
-private val colRegex = Regex("""([+]([|]|\s))+[+]""")
+private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
+private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +||+|+|||+
 
 fun validate(lines: List<String>) {
     //checking lines lengths
@@ -115,10 +114,4 @@ fun validate(lines: List<String>) {
                 throw IllegalArgumentException("Column #$col is wrong")
         }
     }
-}
-
-fun main() {
-    val lines = {}.javaClass.getResource("/test3").readText().split("\n")
-    val result = parse(lines)
-    result.toLines().forEach { println(it) }
 }

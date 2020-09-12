@@ -1,15 +1,17 @@
 package io.slava0135.cashfinder.model
-
-import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import java.lang.Integer.max
+import java.util.ArrayDeque
 
 class Position(val x: Int, val y: Int)
 
+class Result(val cash: Int, val path: List<Position>)
+
 class Node(val value: Int, val position: Position) {
-    val nodes = mutableListOf<Node>()
+    val others = mutableListOf<Node>()
     var isEnd = false
     var isStart = false
-    override fun toString(): String {
+    fun info(): String {
         return "$value in x:${position.x} y:${position.y}"
     }
 }
@@ -20,7 +22,7 @@ class Wall {
     var up = false
     var down = false
 
-    override fun toString() = "left:$left right:$right up:$up down:$down"
+    fun info() = "left:$left right:$right up:$up down:$down"
 }
 
 class Graph(val width: Int, val height: Int) {
@@ -30,27 +32,72 @@ class Graph(val width: Int, val height: Int) {
     var start: Node? = null
     var end: Node? = null
 
+    fun solve(): Result {
+        if (start == null || end == null) throw IllegalStateException("No end/start")
+        link()
+
+        val values = mutableMapOf<Node, Int>()
+        values[start!!] = 0
+        val parents = mutableMapOf<Node, Node?>()
+        parents[start!!] = null
+
+        val proceeded = mutableSetOf<Node>()
+        val inProgress = ArrayDeque<Node>()
+        inProgress.add(start!!)
+        val untouched = toList().toMutableSet() - start
+
+        while(inProgress.isNotEmpty()) {
+            val node = inProgress.first
+            proceeded.add(node)
+            for (other in node.others) {
+                if (other in untouched) {
+                    inProgress.addLast(other)
+                    values[other] = values[node]!! + other.value
+                    parents[other] = node
+                } else {
+                    if (values[other]!! < values[node]!! + other.value) {
+                        if (other in proceeded) {
+                            inProgress.addFirst(other)
+                        }
+                        values[other] = values[node]!! + other.value
+                        parents[other] = node
+                    }
+                }
+            }
+        }
+
+        var node = end!!
+        val path = mutableListOf(node.position)
+        while (parents[node] != null) {
+            node = parents[node]!!
+            path.add(node.position)
+        }
+
+        return Result(values[end!!]!!, path.reversed())
+    }
+
     //build dependencies in grid using walls
-    fun link() {
+    private fun link() {
         for (y in 0 until height) {
             for (x in 0 until width) {
+                val node = grid[x][y]
+                node.others.clear()
                 if (y > 0 && !walls[x][y].up) {
-                    grid[x][y].nodes.add(grid[x][y - 1])
+                    node.others.add(grid[x][y - 1])
                 }
                 if (y < height - 1 && !walls[x][y].down) {
-                    grid[x][y].nodes.add(grid[x][y + 1])
+                    node.others.add(grid[x][y + 1])
                 }
                 if (x > 0 && !walls[x][y].left) {
-                    grid[x][y].nodes.add(grid[x - 1][y])
+                    node.others.add(grid[x - 1][y])
                 }
                 if (x < width - 1 && !walls[x][y].right) {
-                    grid[x][y].nodes.add(grid[x + 1][y])
+                    node.others.add(grid[x + 1][y])
                 }
             }
         }
     }
 
-    //return list of linked nodes
     fun toList(): List<Node> {
         val list = mutableListOf<Node>()
         for (row in grid) {
@@ -69,14 +116,19 @@ class Graph(val width: Int, val height: Int) {
                 spaces[x] = max(spaces[x], len)
             }
         }
+
         val border = "+" + spaces.map { "-".repeat(it) }.joinToString("+") + "+"
+
         val result = mutableListOf<String>()
+
         result.add(border)
         for (y in 0 until height) {
             val line = StringBuilder("|")
             val lowerLine = StringBuilder("+")
+
             val iterator = spaces.iterator()
             var space = iterator.next()
+
             for (x in 0 until width) {
                 if (grid[x][y].isStart) {
                     line.append("S".padStart(space))
