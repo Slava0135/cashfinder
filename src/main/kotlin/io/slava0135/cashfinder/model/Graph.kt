@@ -1,7 +1,6 @@
 package io.slava0135.cashfinder.model
-import java.lang.IllegalStateException
 import java.lang.Integer.max
-import java.util.ArrayDeque
+import java.util.*
 
 class Position(val x: Int, val y: Int)
 
@@ -11,7 +10,7 @@ class Node(val value: Int, val position: Position) {
     val others = mutableListOf<Node>()
     var isEnd = false
     var isStart = false
-    fun info(): String {
+    override fun toString(): String {
         return "$value in x:${position.x} y:${position.y}"
     }
 }
@@ -44,20 +43,23 @@ class Graph(val width: Int, val height: Int) {
         val proceeded = mutableSetOf<Node>()
         val inProgress = ArrayDeque<Node>()
         inProgress.add(start!!)
-        val untouched = toList().toMutableSet() - start
+        val untouched = toList().toMutableSet()
+        untouched.remove(start!!)
 
         while(inProgress.isNotEmpty()) {
-            val node = inProgress.first
+            val node = inProgress.pollFirst()
             proceeded.add(node)
             for (other in node.others) {
                 if (other in untouched) {
-                    inProgress.addLast(other)
                     values[other] = values[node]!! + other.value
                     parents[other] = node
+                    inProgress.addLast(other)
+                    untouched.remove(other)
                 } else {
-                    if (values[other]!! < values[node]!! + other.value) {
+                    if (parents[node] != other && values[other]!! < values[node]!! + other.value) {
                         if (other in proceeded) {
                             inProgress.addFirst(other)
+                            proceeded.remove(other)
                         }
                         values[other] = values[node]!! + other.value
                         parents[other] = node
