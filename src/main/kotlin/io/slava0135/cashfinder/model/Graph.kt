@@ -2,7 +2,7 @@ package io.slava0135.cashfinder.model
 import java.lang.Integer.max
 import java.util.*
 
-class Position(val x: Int, val y: Int)
+data class Position(val x: Int, val y: Int)
 
 class Result(val cash: Int, val path: List<Position>)
 
@@ -56,7 +56,7 @@ class Graph(val width: Int, val height: Int) {
                     inProgress.addLast(other)
                     untouched.remove(other)
                 } else {
-                    if (parents[node] != other && values[other]!! < values[node]!! + other.value) {
+                    if (generateSequence(node) { parents[it] }.all { it != other} && values[other]!! < values[node]!! + other.value) {
                         if (other in proceeded) {
                             inProgress.addFirst(other)
                             proceeded.remove(other)

@@ -10,6 +10,8 @@ internal class GraphTest {
     fun solve() {
         var lines = {}.javaClass.getResource("/pathfinding/test1").readText().split(Regex("""\n"""))
         println(parse(lines).solve().path)
+        lines = {}.javaClass.getResource("/pathfinding/test2").readText().split(Regex("""\n"""))
+        println(parse(lines).solve().path)
     }
 
     @Test
