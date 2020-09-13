@@ -42,10 +42,13 @@ class Graph(val width: Int, val height: Int) {
 
         val proceeded = mutableSetOf<Node>()
         val inProgress = ArrayDeque<Node>()
-        inProgress.add(start!!)
         val untouched = toList().toMutableSet()
-        untouched.remove(start!!)
+        for (node in untouched) {
+            node.others.sortByDescending { it.value }
+        }
 
+        inProgress.add(start!!)
+        untouched.remove(start!!)
         while(inProgress.isNotEmpty()) {
             val node = inProgress.pollFirst()
             proceeded.add(node)
@@ -56,7 +59,8 @@ class Graph(val width: Int, val height: Int) {
                     inProgress.addLast(other)
                     untouched.remove(other)
                 } else {
-                    if (generateSequence(node) { parents[it] }.all { it != other} && values[other]!! < values[node]!! + other.value) {
+                    if ((generateSequence(node) { parents[it] }.all { it != other })
+                            && (values[other]!! < values[node]!! + other.value)) {
                         if (other in proceeded) {
                             inProgress.addFirst(other)
                             proceeded.remove(other)

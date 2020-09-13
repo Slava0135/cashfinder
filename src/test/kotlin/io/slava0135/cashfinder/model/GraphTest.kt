@@ -12,6 +12,8 @@ internal class GraphTest {
         println(parse(lines).solve().path)
         lines = {}.javaClass.getResource("/pathfinding/test2").readText().split(Regex("""\n"""))
         println(parse(lines).solve().path)
+        lines = {}.javaClass.getResource("/pathfinding/test3").readText().split(Regex("""\n"""))
+        println(parse(lines).solve().path)
     }
 
     @Test
