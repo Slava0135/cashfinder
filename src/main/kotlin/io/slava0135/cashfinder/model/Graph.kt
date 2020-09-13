@@ -43,9 +43,6 @@ class Graph(val width: Int, val height: Int) {
         val proceeded = mutableSetOf<Node>()
         val inProgress = ArrayDeque<Node>()
         val untouched = toList().toMutableSet()
-        for (node in untouched) {
-            node.others.sortByDescending { it.value }
-        }
 
         inProgress.add(start!!)
         untouched.remove(start!!)
