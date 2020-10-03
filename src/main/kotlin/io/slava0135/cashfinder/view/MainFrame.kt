@@ -12,9 +12,17 @@ class MainView: View() {
 }
 
 class TopView: View() {
-    override val root = label("Top View")
+    override val root = menubar {
+        menu("File") {
+            item("New")
+            item("Save")
+            item("Load")
+        }
+        menu("Solve")
+        menu("Help")
+    }
 }
 
 class BottomView: View() {
-    override val root = label("Bottom View")
+    override val root = label("WORKSPACE")
 }
