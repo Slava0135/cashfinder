@@ -1,17 +1,30 @@
 package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.Graph
-import io.slava0135.cashfinder.model.Model
 import javafx.scene.control.TextField
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.StageStyle
 import tornadofx.*
+import java.io.File
+import java.lang.IllegalStateException
+
+var graph: Graph? = null
+fun save(file: File) {
+    if (graph == null) throw IllegalStateException("No graph is present")
+    file.writeText(graph.toString())
+}
+
+fun load(file: File) {
+    graph = Graph.createFromLines(file.readLines())
+}
 
 class Cashfinder: App(MainView::class)
 
 class MainView: View() {
     override val root = borderpane {
+        minWidth = 800.0
+        minHeight = 450.0
         top<Menu>()
         bottom<Workspace>()
     }
@@ -21,7 +34,7 @@ class Menu: View() {
     override val root = menubar {
         menu("File") {
             item("New").action {
-                if (Model.graph == null) {
+                if (graph == null) {
                     CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                 } else {
                     confirm("Are you sure?", "Current grid will be deleted!") {
@@ -33,7 +46,7 @@ class Menu: View() {
                 val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
                 if (files.isNotEmpty()) {
                     try {
-                        Model.save(files.first())
+                        save(files.first())
                     } catch (e: Exception) {
                         error(e.localizedMessage)
                     }
@@ -43,9 +56,9 @@ class Menu: View() {
                 confirm("Are you sure?", "Current grid will be deleted!") {
                     val files = chooseFile("Select Input File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
                     if (files.isNotEmpty()) {
-                        if (Model.graph == null) {
+                        if (graph == null) {
                             try {
-                                Model.load(files.first())
+                                load(files.first())
                             } catch (e: Exception) {
                                 error(e.localizedMessage)
                             }
@@ -58,13 +71,9 @@ class Menu: View() {
 
         }
         menu("Help").action {
-            
+
         }
     }
-}
-
-class Workspace: View() {
-    override val root = label("WORKSPACE")
 }
 
 class CreationMenu: Fragment() {
@@ -77,7 +86,11 @@ class CreationMenu: Fragment() {
             fieldset("Create new Graph") {
                 field("Width") {
                     textfield {
-                        filterInput { it.controlNewText.isInt() }
+                        filterInput {
+                            it.controlNewText.let {
+                                it.isInt() && it.toInt() in 1..100
+                            }
+                        }
                         graphWidth = this
                     }
                 }
@@ -94,9 +107,36 @@ class CreationMenu: Fragment() {
                             val width = graphWidth.text.toInt()
                             val height = graphHeight.text.toInt()
                             if (width > 0 && height > 0) {
-                                Model.graph = Graph.createEmpty(width, height)
+                                graph = Graph.createEmpty(width, height)
                                 close()
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+class Workspace: View() {
+    override val root = gridpane {
+        if (graph != null) {
+            val grid = graph!!.grid
+            val walls = graph!!.walls
+            for (x in 0..grid.size * 2) {
+                for (y in 0..grid[0].size * 2) {
+                    when {
+                        y % 2 == 0 && x % 2 == 0 -> {
+                            this.add(rectangle(width = 8, height = 8))
+                        }
+                        y % 2 == 0 -> {
+                            this.add(rectangle(width = 32, height = 8))
+                        }
+                        x % 2 == 0 -> {
+                            this.add(rectangle(width = 8, height = 32))
+                        }
+                        else -> {
+                            this.add(textfield())
                         }
                     }
                 }
