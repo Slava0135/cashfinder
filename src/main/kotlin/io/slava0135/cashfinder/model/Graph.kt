@@ -24,7 +24,7 @@ class Wall {
     fun info() = "left:$left right:$right up:$up down:$down"
 }
 
-class Graph(val width: Int, val height: Int) {
+class Graph private constructor(val width: Int, val height: Int) {
     val grid = Array(width) { Array(height) { Node(0, Position(-1, -1)) } }
     val walls = Array(width) { Array(height) { Wall() } }
 
@@ -35,7 +35,19 @@ class Graph(val width: Int, val height: Int) {
         private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
         private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +||+|+|||+
 
-        fun read(lines: List<String>): Graph {
+        fun createEmpty(width: Int, height: Int): Graph {
+            require(width > 0 && height > 0)
+            val graph = Graph(width, height)
+            generateOuterWalls(graph)
+            for (x in graph.grid.indices) {
+                for (y in graph.grid[0].indices) {
+                    graph.grid[x][y] = Node(0, Position(x, y))
+                }
+            }
+            return graph
+        }
+
+        fun createFromLines(lines: List<String>): Graph {
             //checking lines lengths
             if (lines.any { it.length != lines.first().length })
                 throw IllegalArgumentException("Different lines lengths")
@@ -128,8 +140,13 @@ class Graph(val width: Int, val height: Int) {
                 }
                 x = 0
             }
-            if (graph.start == null) throw IllegalArgumentException("No start is presented")
-            if (graph.end == null) throw IllegalArgumentException("No end is presented")
+            if (graph.start == null) throw IllegalArgumentException("No start is present")
+            if (graph.end == null) throw IllegalArgumentException("No end is present")
+            generateOuterWalls(graph)
+            return graph
+        }
+
+        private fun generateOuterWalls(graph: Graph) {
             for (i in 0 until graph.height) {
                 graph.walls[0][i].left = true
                 graph.walls[graph.width - 1][i].right = true
@@ -138,12 +155,11 @@ class Graph(val width: Int, val height: Int) {
                 graph.walls[i][0].up = true
                 graph.walls[i][graph.height - 1].down = true
             }
-            return graph
         }
     }
 
     fun solve(): Result {
-        if (start == null || end == null) throw IllegalStateException("No end/start is presented")
+        if (start == null || end == null) throw IllegalStateException("No end/start is present")
         link()
 
         val values = mutableMapOf<Node, Int>()
@@ -224,7 +240,7 @@ class Graph(val width: Int, val height: Int) {
 
     fun toLines(): List<String> {
 
-        if (start == null || end == null) throw IllegalStateException("No start/end is presented")
+        if (start == null || end == null) throw IllegalStateException("No start/end is present")
         val spaces = IntArray(width)
         for (y in 0 until height) {
             for (x in grid.indices) {

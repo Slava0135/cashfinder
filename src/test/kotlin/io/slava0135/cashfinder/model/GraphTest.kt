@@ -9,13 +9,13 @@ internal class GraphTest {
     @Test
     fun solve() {
         var lines = {}.javaClass.getResource("/pathfinding/test1").readText().split(Regex("""\n"""))
-        println(Graph.read(lines).solve().path)
+        println(Graph.createFromLines(lines).solve().path)
         lines = {}.javaClass.getResource("/pathfinding/test2").readText().split(Regex("""\n"""))
-        println(Graph.read(lines).solve().path)
+        println(Graph.createFromLines(lines).solve().path)
         lines = {}.javaClass.getResource("/pathfinding/test3").readText().split(Regex("""\n"""))
-        println(Graph.read(lines).solve().path)
+        println(Graph.createFromLines(lines).solve().path)
         lines = {}.javaClass.getResource("/pathfinding/test4").readText().split(Regex("""\n"""))
-        println(Graph.read(lines).solve().path)
+        println(Graph.createFromLines(lines).solve().path)
     }
 
     @Test
