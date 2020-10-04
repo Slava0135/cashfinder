@@ -2,11 +2,14 @@ package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.Graph
 import javafx.beans.property.SimpleObjectProperty
+import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
+import javafx.scene.effect.BlendMode
 import javafx.scene.layout.Background
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
+import javafx.scene.text.Font
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.StageStyle
@@ -145,7 +148,7 @@ class Workspace: Fragment() {
                 val walls = graph.value.walls
                 for (y in 0..grid[0].size * 2) {
                     row {
-                        for (x in 0..grid[0].size * 2) {
+                        for (x in 0..grid.size * 2) {
                             when {
                                 y % 2 == 0 && x % 2 == 0 -> {
                                     rectangle(width = 8, height = 8) { fill = Color.BLACK }
@@ -153,21 +156,31 @@ class Workspace: Fragment() {
                                 y % 2 == 0 -> {
                                     rectangle(width = 64, height = 8) { fill = Color.BLACK }.apply {
                                         setOnMouseClicked {
-                                            if (fill == Color.WHITE) fill = Color.BLACK
-                                            else fill = Color.WHITE
+                                            if (y != 0 && y != grid[0].size * 2 && fill == Color.BLACK) fill = Color.WHITE
+                                            else fill = Color.BLACK
                                         }
                                     }
                                 }
                                 x % 2 == 0 -> {
                                     rectangle(width = 8, height = 64) { fill = Color.BLACK }.apply {
                                         setOnMouseClicked {
-                                            if (fill == Color.WHITE) fill = Color.BLACK
-                                            else fill = Color.WHITE
+                                            if (x != 0 && x != grid.size * 2 && fill == Color.BLACK) fill = Color.WHITE
+                                            else fill = Color.BLACK
                                         }
                                     }
                                 }
                                 else -> {
-                                    label()
+                                    textfield {
+                                        maxWidth = 64.0
+                                        alignment = Pos.CENTER
+                                        background = Background.EMPTY
+                                        filterInput {
+                                            it.controlNewText.let {
+                                                it in listOf("S", "F") || it.isInt() && it.toInt() in -99..99
+                                            }
+                                        }
+                                        font = Font.font(20.0)
+                                    }
                                 }
                             }
                         }
