@@ -2,7 +2,10 @@ package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.Graph
 import javafx.beans.property.SimpleObjectProperty
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
+import javafx.scene.layout.Priority
+import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.StageStyle
@@ -25,10 +28,8 @@ class Cashfinder: App(MainView::class)
 
 class MainView: View() {
     override val root = borderpane {
-        minWidth = 800.0
-        minHeight = 450.0
         top<Menu>()
-        bottom<Workspace>()
+        center<Workspace>()
     }
 }
 
@@ -90,7 +91,7 @@ class CreationMenu: Fragment() {
                     textfield {
                         filterInput {
                             it.controlNewText.let {
-                                it.isInt() && it.toInt() in 1..100
+                                it.isInt() && it.toInt() in 1..50
                             }
                         }
                         graphWidth = this
@@ -98,7 +99,11 @@ class CreationMenu: Fragment() {
                 }
                 field("Height") {
                     textfield {
-                        filterInput { it.controlNewText.isInt() }
+                        filterInput {
+                            it.controlNewText.let {
+                                it.isInt() && it.toInt() in 1..50
+                            }
+                        }
                         graphHeight = this
                     }
                 }
@@ -124,32 +129,36 @@ class Workspace: Fragment() {
 
     init {
         graph.addListener {
-            _, _, newValue -> changeView()
+            _, _, _ -> replaceWith<Workspace>()
         }
     }
 
-    private fun changeView() {
-        find<MainView>().root.bottom = Workspace().root
-    }
-
-    override val root = gridpane {
-        if (graph.value != null) {
-            val grid = graph.value.grid
-            val walls = graph.value.walls
-            for (x in 0..grid.size * 2) {
+    override val root = scrollpane {
+        vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+        hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+        setMinSize(800.0, 450.0)
+        content = gridpane {
+            isPannable = true
+            if (graph.value != null) {
+                val grid = graph.value.grid
+                val walls = graph.value.walls
                 for (y in 0..grid[0].size * 2) {
-                    when {
-                        y % 2 == 0 && x % 2 == 0 -> {
-                            this.add(rectangle(width = 8, height = 8), x, y)
-                        }
-                        y % 2 == 0 -> {
-                            this.add(rectangle(width = 32, height = 8), x, y)
-                        }
-                        x % 2 == 0 -> {
-                            this.add(rectangle(width = 8, height = 32), x, y)
-                        }
-                        else -> {
-                            this.add(textfield(), x, y)
+                    row {
+                        for (x in 0..grid[0].size * 2) {
+                            when {
+                                y % 2 == 0 && x % 2 == 0 -> {
+                                    rectangle(width = 8, height = 8) { fill = Color.BLACK }
+                                }
+                                y % 2 == 0 -> {
+                                    rectangle(width = 32, height = 8) { fill = Color.RED }
+                                }
+                                x % 2 == 0 -> {
+                                    rectangle(width = 8, height = 32) { fill = Color.RED }
+                                }
+                                else -> {
+                                    label()
+                                }
+                            }
                         }
                     }
                 }
