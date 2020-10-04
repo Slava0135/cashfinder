@@ -4,6 +4,8 @@ import io.slava0135.cashfinder.model.Graph
 import io.slava0135.cashfinder.model.Model
 import javafx.scene.control.TextField
 import javafx.stage.FileChooser
+import javafx.stage.Modality
+import javafx.stage.StageStyle
 import tornadofx.*
 
 class Cashfinder: App(MainView::class)
@@ -20,10 +22,10 @@ class Menu: View() {
         menu("File") {
             item("New").action {
                 if (Model.graph == null) {
-                    openInternalWindow(CreationMenu())
+                    CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                 } else {
                     confirm("Are you sure?", "Current grid will be deleted!") {
-                        openInternalWindow(CreationMenu())
+                        CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                     }
                 }
             }
@@ -65,30 +67,38 @@ class Workspace: View() {
     override val root = label("WORKSPACE")
 }
 
-class CreationMenu: View() {
+class CreationMenu: Fragment() {
 
     var graphHeight: TextField by singleAssign()
     var graphWidth: TextField by singleAssign()
 
-    override val root = vbox {
-        hbox {
-            label("Width")
-            val field = textfield()
-            field.filterInput { it.controlNewText.isInt() }
-            graphWidth = field
-        }
-        hbox {
-            label("Height")
-            val field = textfield()
-            field.filterInput { it.controlNewText.isInt() }
-            graphHeight = field
-        }
-        button("Create") {
-            useMaxWidth = true
-            action {
-                if (graphHeight.text.isNotEmpty() && graphWidth.text.isNotEmpty()) {
-                    Model.graph = Graph.createEmpty(graphWidth.text.toInt(), graphHeight.text.toInt())
-                    close()
+    override val root = hbox {
+        form {
+            fieldset("Create new Graph") {
+                field("Width") {
+                    textfield {
+                        filterInput { it.controlNewText.isInt() }
+                        graphWidth = this
+                    }
+                }
+                field("Height") {
+                    textfield {
+                        filterInput { it.controlNewText.isInt() }
+                        graphHeight = this
+                    }
+                }
+                button("Create") {
+                    useMaxWidth = true
+                    action {
+                        if (graphHeight.text.isNotEmpty() && graphWidth.text.isNotEmpty()) {
+                            val width = graphWidth.text.toInt()
+                            val height = graphHeight.text.toInt()
+                            if (width > 0 && height > 0) {
+                                Model.graph = Graph.createEmpty(width, height)
+                                close()
+                            }
+                        }
+                    }
                 }
             }
         }
