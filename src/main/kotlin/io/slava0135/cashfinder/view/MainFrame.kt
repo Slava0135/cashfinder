@@ -1,5 +1,7 @@
 package io.slava0135.cashfinder.view
 
+import io.slava0135.cashfinder.model.Graph
+import io.slava0135.cashfinder.model.Model
 import javafx.stage.FileChooser
 import tornadofx.*
 
@@ -15,16 +17,46 @@ class MainView: View() {
 class Menu: View() {
     override val root = menubar {
         menu("File") {
-            item("New")
+            item("New").action {
+                if (Model.graph == null) {
+                    Model.graph = Graph.createEmpty(-1, -1)
+                } else {
+                    confirm("Are you sure?", "Current grid will be deleted!") {
+                        Model.graph = Graph.createEmpty(-1, -1)
+                    }
+                }
+            }
             item("Save").action {
-                val file = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
+                val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
+                if (files.isNotEmpty()) {
+                    try {
+                        Model.save(files.first())
+                    } catch (e: Exception) {
+                        error(e.localizedMessage)
+                    }
+                }
             }
             item("Load").action {
-                val file = chooseFile("Select Input File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
+                confirm("Are you sure?", "Current grid will be deleted!") {
+                    val files = chooseFile("Select Input File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
+                    if (files.isNotEmpty()) {
+                        if (Model.graph == null) {
+                            try {
+                                Model.load(files.first())
+                            } catch (e: Exception) {
+                                error(e.localizedMessage)
+                            }
+                        }
+                    }
+                }
             }
         }
-        menu("Solve")
-        menu("Help")
+        menu("Solve").action {
+
+        }
+        menu("Help").action {
+
+        }
     }
 }
 

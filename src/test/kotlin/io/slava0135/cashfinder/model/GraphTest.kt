@@ -2,19 +2,17 @@ package io.slava0135.cashfinder.model
 
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
-
 internal class GraphTest {
 
     @Test
     fun solve() {
-        var lines = {}.javaClass.getResource("/pathfinding/test1").readText().split(Regex("""\n"""))
+        var lines = {}.javaClass.getResource("/pathfinding/test1.csh").readText().split(Regex("""\n"""))
         println(Graph.createFromLines(lines).solve().path)
-        lines = {}.javaClass.getResource("/pathfinding/test2").readText().split(Regex("""\n"""))
+        lines = {}.javaClass.getResource("/pathfinding/test2.csh").readText().split(Regex("""\n"""))
         println(Graph.createFromLines(lines).solve().path)
-        lines = {}.javaClass.getResource("/pathfinding/test3").readText().split(Regex("""\n"""))
+        lines = {}.javaClass.getResource("/pathfinding/test3.csh").readText().split(Regex("""\n"""))
         println(Graph.createFromLines(lines).solve().path)
-        lines = {}.javaClass.getResource("/pathfinding/test4").readText().split(Regex("""\n"""))
+        lines = {}.javaClass.getResource("/pathfinding/test4.csh").readText().split(Regex("""\n"""))
         println(Graph.createFromLines(lines).solve().path)
     }
 

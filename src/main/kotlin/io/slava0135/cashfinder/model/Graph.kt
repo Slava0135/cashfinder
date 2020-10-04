@@ -159,7 +159,7 @@ class Graph private constructor(val width: Int, val height: Int) {
     }
 
     fun solve(): Result {
-        if (start == null || end == null) throw IllegalStateException("No end/start is present")
+        validate()
         link()
 
         val values = mutableMapOf<Node, Int>()
@@ -239,8 +239,8 @@ class Graph private constructor(val width: Int, val height: Int) {
     }
 
     fun toLines(): List<String> {
+        validate()
 
-        if (start == null || end == null) throw IllegalStateException("No start/end is present")
         val spaces = IntArray(width)
         for (y in 0 until height) {
             for (x in grid.indices) {
@@ -283,5 +283,12 @@ class Graph private constructor(val width: Int, val height: Int) {
         }
         result[result.lastIndex] = border
         return result
+    }
+
+    override fun toString(): String = toLines().joinToString("\n")
+
+    private fun validate() {
+        if (start == null) throw IllegalStateException("No start is present")
+        if (end == null) throw IllegalStateException("No end is present")
     }
 }
