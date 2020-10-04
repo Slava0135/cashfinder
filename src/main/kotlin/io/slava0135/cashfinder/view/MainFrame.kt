@@ -2,6 +2,7 @@ package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.Graph
 import io.slava0135.cashfinder.model.Model
+import javafx.scene.control.TextField
 import javafx.stage.FileChooser
 import tornadofx.*
 
@@ -19,10 +20,10 @@ class Menu: View() {
         menu("File") {
             item("New").action {
                 if (Model.graph == null) {
-                    Model.graph = Graph.createEmpty(-1, -1)
+                    openInternalWindow(CreationMenu())
                 } else {
                     confirm("Are you sure?", "Current grid will be deleted!") {
-                        Model.graph = Graph.createEmpty(-1, -1)
+                        openInternalWindow(CreationMenu())
                     }
                 }
             }
@@ -55,11 +56,41 @@ class Menu: View() {
 
         }
         menu("Help").action {
-
+            
         }
     }
 }
 
 class Workspace: View() {
     override val root = label("WORKSPACE")
+}
+
+class CreationMenu: View() {
+
+    var graphHeight: TextField by singleAssign()
+    var graphWidth: TextField by singleAssign()
+
+    override val root = vbox {
+        hbox {
+            label("Width")
+            val field = textfield()
+            field.filterInput { it.controlNewText.isInt() }
+            graphWidth = field
+        }
+        hbox {
+            label("Height")
+            val field = textfield()
+            field.filterInput { it.controlNewText.isInt() }
+            graphHeight = field
+        }
+        button("Create") {
+            useMaxWidth = true
+            action {
+                if (graphHeight.text.isNotEmpty() && graphWidth.text.isNotEmpty()) {
+                    Model.graph = Graph.createEmpty(graphWidth.text.toInt(), graphHeight.text.toInt())
+                    close()
+                }
+            }
+        }
+    }
 }
