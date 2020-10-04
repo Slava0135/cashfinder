@@ -74,11 +74,12 @@ class Graph(val width: Int, val height: Int) {
             val len = lines[0].length
             val graph = Graph(crosses.size - 1, lines.size / 2)
             var x = 0
-            var y = 0
             //only rows with digits
-            for (row in 1 until lines.size step 2) {
+            for ((y, row) in (1 until lines.size step 2).withIndex()) {
+
                 val iterator = crosses.drop(1).iterator()
                 var cross = iterator.next()
+
                 val buffer = StringBuilder()
 
                 var col = 1
@@ -90,20 +91,24 @@ class Graph(val width: Int, val height: Int) {
                             graph.walls[x][y].right = true
                         }
                         val value = buffer.replace(Regex("""\s"""), "")
-                        if (value.toIntOrNull() != null) graph.grid[x][y] = Node(value.toInt(), Position(x, y))
-                        else if (value == "S") {
-                            if (graph.start != null) throw IllegalArgumentException("Multiple start tiles")
-                            val node = Node(0, Position(x, y)).apply { isStart = true }
-                            graph.grid[x][y] = node
-                            graph.start = node
+                        when {
+                            value.toIntOrNull() != null -> graph.grid[x][y] = Node(value.toInt(), Position(x, y))
+                            value == "S" -> {
+                                if (graph.start != null) throw IllegalArgumentException("Multiple start tiles")
+                                val node = Node(0, Position(x, y)).apply { isStart = true }
+                                graph.grid[x][y] = node
+                                graph.start = node
+                            }
+                            value == "F" -> {
+                                if (graph.end != null) throw IllegalArgumentException("Multiple finish tiles")
+                                val node = Node(0, Position(x, y)).apply { isEnd = true }
+                                graph.grid[x][y] = node
+                                graph.end = node
+                            }
+                            else -> throw IllegalArgumentException("Invalid tile x:$x y:$y")
                         }
-                        else if (value == "F") {
-                            if (graph.end != null) throw IllegalArgumentException("Multiple finish tiles")
-                            val node = Node(0, Position(x, y)).apply { isEnd = true }
-                            graph.grid[x][y] = node
-                            graph.end = node
-                        } else throw IllegalArgumentException("Invalid tile x:$x y:$y")
                         buffer.clear()
+
                         if (iterator.hasNext()) {
                             cross = iterator.next()
                         } else break
@@ -122,10 +127,9 @@ class Graph(val width: Int, val height: Int) {
                     col++
                 }
                 x = 0
-                y++
             }
-            if (graph.start == null) throw IllegalArgumentException("No start present")
-            if (graph.end == null) throw IllegalArgumentException("No end present")
+            if (graph.start == null) throw IllegalArgumentException("No start is presented")
+            if (graph.end == null) throw IllegalArgumentException("No end is presented")
             for (i in 0 until graph.height) {
                 graph.walls[0][i].left = true
                 graph.walls[graph.width - 1][i].right = true
@@ -139,7 +143,7 @@ class Graph(val width: Int, val height: Int) {
     }
 
     fun solve(): Result {
-        if (start == null || end == null) throw IllegalStateException("No end/start")
+        if (start == null || end == null) throw IllegalStateException("No end/start is presented")
         link()
 
         val values = mutableMapOf<Node, Int>()
@@ -219,7 +223,8 @@ class Graph(val width: Int, val height: Int) {
     }
 
     fun toLines(): List<String> {
-        if (start == null && end == null) throw IllegalStateException("No start or end present")
+
+        if (start == null || end == null) throw IllegalStateException("No start/end is presented")
         val spaces = IntArray(width)
         for (y in 0 until height) {
             for (x in grid.indices) {
@@ -228,11 +233,11 @@ class Graph(val width: Int, val height: Int) {
             }
         }
 
-        val border = "+" + spaces.map { "-".repeat(it) }.joinToString("+") + "+"
+        val border = "+" + spaces.joinToString("+") { "-".repeat(it) } + "+"
 
         val result = mutableListOf<String>()
-
         result.add(border)
+
         for (y in 0 until height) {
             val line = StringBuilder("|")
             val lowerLine = StringBuilder("+")
@@ -241,25 +246,17 @@ class Graph(val width: Int, val height: Int) {
             var space = iterator.next()
 
             for (x in 0 until width) {
-                if (grid[x][y].isStart) {
-                    line.append("S".padStart(space))
-                } else if (grid[x][y].isEnd) {
-                    line.append("F".padStart(space))
-                } else {
-                    line.append(grid[x][y].value.toString().padStart(space))
+                when {
+                    grid[x][y].isStart -> line.append("S".padStart(space))
+                    grid[x][y].isEnd -> line.append("F".padStart(space))
+                    else -> line.append(grid[x][y].value.toString().padStart(space))
                 }
 
-                if (walls[x][y].right) {
-                    line.append('|')
-                } else {
-                    line.append(' ')
-                }
+                if (walls[x][y].right) line.append('|')
+                else line.append(' ')
 
-                if (walls[x][y].down) {
-                    lowerLine.append("-".repeat(space) + "+")
-                } else {
-                    lowerLine.append(" ".repeat(space) + "+")
-                }
+                if (walls[x][y].down) lowerLine.append("-".repeat(space) + "+")
+                else lowerLine.append(" ".repeat(space) + "+")
 
                 if (iterator.hasNext()) {
                     space = iterator.next()
