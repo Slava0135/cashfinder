@@ -4,6 +4,7 @@ import io.slava0135.cashfinder.model.Graph
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
+import javafx.scene.layout.Background
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.stage.FileChooser
@@ -150,10 +151,20 @@ class Workspace: Fragment() {
                                     rectangle(width = 8, height = 8) { fill = Color.BLACK }
                                 }
                                 y % 2 == 0 -> {
-                                    rectangle(width = 32, height = 8) { fill = Color.RED }
+                                    rectangle(width = 64, height = 8) { fill = Color.BLACK }.apply {
+                                        setOnMouseClicked {
+                                            if (fill == Color.WHITE) fill = Color.BLACK
+                                            else fill = Color.WHITE
+                                        }
+                                    }
                                 }
                                 x % 2 == 0 -> {
-                                    rectangle(width = 8, height = 32) { fill = Color.RED }
+                                    rectangle(width = 8, height = 64) { fill = Color.BLACK }.apply {
+                                        setOnMouseClicked {
+                                            if (fill == Color.WHITE) fill = Color.BLACK
+                                            else fill = Color.WHITE
+                                        }
+                                    }
                                 }
                                 else -> {
                                     label()
