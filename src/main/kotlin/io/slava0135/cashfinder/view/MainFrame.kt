@@ -38,12 +38,8 @@ class Menu: View() {
     override val root = menubar {
         menu("File") {
             item("New").action {
-                if (graph.value == null) {
+                confirm("Are you sure?", "Current grid will be deleted!") {
                     CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
-                } else {
-                    confirm("Are you sure?", "Current grid will be deleted!") {
-                        CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
-                    }
                 }
             }
             item("Save").action {
@@ -174,7 +170,12 @@ class Workspace: Fragment() {
                                         alignment = Pos.CENTER
                                         background = Background.EMPTY
                                         font = Font.font(20.0)
-                                        text = grid[x / 2][y / 2].value.toString()
+                                        val elem = grid[x / 2][y / 2]
+                                        text = when {
+                                            elem.isStart -> "S"
+                                            elem.isEnd -> "F"
+                                            else -> elem.value.toString()
+                                        }
                                         filterInput {
                                             it.controlNewText.let {
                                                 it in listOf("S", "F") || it.isInt() && it.toInt() in -99..99
