@@ -6,7 +6,7 @@ data class Position(val x: Int, val y: Int)
 
 class Result(val cash: Int, val path: List<Position>)
 
-class Node(val value: Int, val position: Position) {
+class Node(var value: Int, val position: Position) {
     val others = mutableListOf<Node>()
     var isEnd = false
     var isStart = false
@@ -288,7 +288,7 @@ class Graph private constructor(val width: Int, val height: Int) {
     override fun toString(): String = toLines().joinToString("\n")
 
     private fun validate() {
-        if (start == null) throw IllegalStateException("No start is present")
-        if (end == null) throw IllegalStateException("No end is present")
+        //if (start == null) throw IllegalStateException("No start is present")
+        //if (end == null) throw IllegalStateException("No end is present")
     }
 }

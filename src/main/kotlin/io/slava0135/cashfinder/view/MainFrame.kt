@@ -150,8 +150,17 @@ class Workspace: Fragment() {
                                     rectangle(width = 64, height = 8) { fill = Color.BLACK }.apply {
                                         fill = if (y == 0 || y == grid[0].size * 2 || walls[x / 2][y / 2].up) Color.BLACK else Color.WHITE
                                         setOnMouseClicked {
-                                            fill = if (y != 0 && y != grid[0].size * 2 && fill == Color.BLACK) Color.WHITE
-                                            else Color.BLACK
+                                            if (y != 0 && y != grid[0].size * 2) {
+                                                if (fill == Color.BLACK) {
+                                                    graph.value.walls[x / 2][y / 2].up = false
+                                                    graph.value.walls[x / 2][y / 2 - 1].down = false
+                                                    fill = Color.WHITE
+                                                } else {
+                                                    graph.value.walls[x / 2][y / 2].up = true
+                                                    graph.value.walls[x / 2][y / 2 - 1].down = true
+                                                    fill = Color.BLACK
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -159,8 +168,17 @@ class Workspace: Fragment() {
                                     rectangle(width = 8, height = 64) { fill = Color.BLACK }.apply {
                                         fill = if (x == 0 || x == grid.size * 2 || walls[x / 2][y / 2].left) Color.BLACK else Color.WHITE
                                         setOnMouseClicked {
-                                            fill = if (x != 0 && x != grid.size * 2 && fill == Color.BLACK) Color.WHITE
-                                            else Color.BLACK
+                                            if (x != 0 && x != grid.size * 2) {
+                                                if (fill == Color.BLACK) {
+                                                    graph.value.walls[x / 2 - 1][y / 2].right = false
+                                                    graph.value.walls[x / 2][y / 2].left = false
+                                                    fill = Color.WHITE
+                                                } else {
+                                                    graph.value.walls[x / 2 - 1][y / 2].right = true
+                                                    graph.value.walls[x / 2][y / 2].left = true
+                                                    fill = Color.BLACK
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -179,6 +197,31 @@ class Workspace: Fragment() {
                                         filterInput {
                                             it.controlNewText.let {
                                                 it in listOf("S", "F") || it.isInt() && it.toInt() in -99..99
+                                            }
+                                        }
+                                        setOnAction {
+                                            when (text) {
+                                                "S" -> {
+                                                    graph.value.grid[x / 2][y / 2].apply {
+                                                        value = 0
+                                                        isStart = true
+                                                        isEnd = false
+                                                    }
+                                                }
+                                                "F" -> {
+                                                    graph.value.grid[x / 2][y / 2].apply {
+                                                        value = 0
+                                                        isStart = false
+                                                        isEnd = true
+                                                    }
+                                                }
+                                                else -> {
+                                                    graph.value.grid[x / 2][y / 2].apply {
+                                                        value = if (text == "-") 0 else text.toInt()
+                                                        isStart = false
+                                                        isEnd = false
+                                                    }
+                                                }
                                             }
                                         }
                                     }
