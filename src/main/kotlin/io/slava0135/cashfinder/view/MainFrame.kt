@@ -3,6 +3,7 @@ package io.slava0135.cashfinder.view
 import io.slava0135.cashfinder.model.Graph
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Pos
+import javafx.scene.control.Alert
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
 import javafx.scene.effect.BlendMode
@@ -21,7 +22,7 @@ var graph = objectProperty<Graph>()
 
 fun save(file: File) {
     if (graph.value == null) throw IllegalStateException("No graph is present")
-    file.writeText(graph.toString())
+    file.writeText(graph.value.toString())
 }
 
 fun load(file: File) {
