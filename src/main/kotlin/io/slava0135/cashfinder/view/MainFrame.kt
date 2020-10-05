@@ -155,17 +155,19 @@ class Workspace: Fragment() {
                                 }
                                 y % 2 == 0 -> {
                                     rectangle(width = 64, height = 8) { fill = Color.BLACK }.apply {
+                                        fill = if (y == 0 || y == grid[0].size * 2 || walls[x % 2][y % 2].down) Color.BLACK else Color.WHITE
                                         setOnMouseClicked {
-                                            if (y != 0 && y != grid[0].size * 2 && fill == Color.BLACK) fill = Color.WHITE
-                                            else fill = Color.BLACK
+                                            fill = if (y != 0 && y != grid[0].size * 2 && fill == Color.BLACK) Color.WHITE
+                                            else Color.BLACK
                                         }
                                     }
                                 }
                                 x % 2 == 0 -> {
                                     rectangle(width = 8, height = 64) { fill = Color.BLACK }.apply {
+                                        fill = if (x == 0 || x == grid.size * 2 || walls[x % 2][y % 2].right) Color.BLACK else Color.WHITE
                                         setOnMouseClicked {
-                                            if (x != 0 && x != grid.size * 2 && fill == Color.BLACK) fill = Color.WHITE
-                                            else fill = Color.BLACK
+                                            fill = if (x != 0 && x != grid.size * 2 && fill == Color.BLACK) Color.WHITE
+                                            else Color.BLACK
                                         }
                                     }
                                 }
@@ -174,12 +176,13 @@ class Workspace: Fragment() {
                                         maxWidth = 64.0
                                         alignment = Pos.CENTER
                                         background = Background.EMPTY
+                                        font = Font.font(20.0)
+                                        text = grid[x % 2][y % 2].value.toString()
                                         filterInput {
                                             it.controlNewText.let {
                                                 it in listOf("S", "F") || it.isInt() && it.toInt() in -99..99
                                             }
                                         }
-                                        font = Font.font(20.0)
                                     }
                                 }
                             }
