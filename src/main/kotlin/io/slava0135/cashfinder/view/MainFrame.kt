@@ -207,7 +207,7 @@ class Workspace: Fragment() {
                                     rectangle(width = 8, height = 8) { fill = Color.BLACK }
                                 }
                                 y % 2 == 0 -> {
-                                    rectangle(width = 64, height = 8) { fill = Color.BLACK }.apply {
+                                    rectangle(width = 64, height = 8).apply {
                                         fill = if (y == 0 || y == grid[0].size * 2 || walls[x / 2][y / 2].up) Color.BLACK else Color.WHITE
                                         setOnMouseClicked {
                                             if (y != 0 && y != grid[0].size * 2) {
@@ -225,7 +225,7 @@ class Workspace: Fragment() {
                                     }
                                 }
                                 x % 2 == 0 -> {
-                                    rectangle(width = 8, height = 64) { fill = Color.BLACK }.apply {
+                                    rectangle(width = 8, height = 64).apply {
                                         fill = if (x == 0 || x == grid.size * 2 || walls[x / 2][y / 2].left) Color.BLACK else Color.WHITE
                                         setOnMouseClicked {
                                             if (x != 0 && x != grid.size * 2) {

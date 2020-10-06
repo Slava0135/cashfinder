@@ -19,7 +19,7 @@ class Wall {
     var up = false
     var down = false
 
-    fun info() = "left:$left right:$right up:$up down:$down"
+    override fun toString() = "left:$left right:$right up:$up down:$down"
 }
 
 class Graph private constructor(val width: Int, val height: Int) {
