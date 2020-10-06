@@ -35,13 +35,23 @@ class Graph private constructor(val width: Int, val height: Int) {
         private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
         private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +||+|+|||+
 
-        fun createEmpty(width: Int, height: Int): Graph {
+        fun createEmpty(width: Int, height: Int, allWalls: Boolean, random: Boolean): Graph {
             require(width > 0 && height > 0)
             val graph = Graph(width, height)
-            generateOuterWalls(graph)
-            for (x in graph.grid.indices) {
-                for (y in graph.grid[0].indices) {
-                    graph.grid[x][y] = Node(0, Position(x, y))
+            if (allWalls) generateAllWalls(graph)
+            else generateOuterWalls(graph)
+            if (random) {
+                val generator = Random()
+                for (x in graph.grid.indices) {
+                    for (y in graph.grid[0].indices) {
+                        graph.grid[x][y] = Node(generator.nextInt(199) - 99, Position(x, y))
+                    }
+                }
+            } else {
+                for (x in graph.grid.indices) {
+                    for (y in graph.grid[0].indices) {
+                        graph.grid[x][y] = Node(0, Position(x, y))
+                    }
                 }
             }
             return graph
@@ -144,6 +154,19 @@ class Graph private constructor(val width: Int, val height: Int) {
             if (graph.end == null) throw IllegalArgumentException("No end is present")
             generateOuterWalls(graph)
             return graph
+        }
+
+        private fun generateAllWalls(graph: Graph) {
+            for (x in graph.grid.indices) {
+                for (y in graph.grid[0].indices) {
+                    graph.walls[x][y].apply {
+                        up = true
+                        down = true
+                        left = true
+                        right = true
+                    }
+                }
+            }
         }
 
         private fun generateOuterWalls(graph: Graph) {

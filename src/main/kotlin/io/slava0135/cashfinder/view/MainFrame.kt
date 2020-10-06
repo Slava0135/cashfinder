@@ -3,6 +3,8 @@ package io.slava0135.cashfinder.view
 import io.slava0135.cashfinder.model.Graph
 import io.slava0135.cashfinder.model.Node
 import javafx.geometry.Pos
+import javafx.scene.Parent
+import javafx.scene.control.RadioButton
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
 import javafx.scene.layout.Background
@@ -16,18 +18,6 @@ import java.io.File
 import java.lang.IllegalStateException
 
 private val graph = objectProperty<Graph>()
-private val start = mutableSetOf<Node>()
-private val end = mutableSetOf<Node>()
-
-private fun fixGraph() {
-    if (graph.value == null) throw IllegalStateException("No graph is present")
-    if (start.size == 0) throw IllegalStateException("No start is present")
-    if (end.size == 0) throw IllegalStateException("No end is present")
-    if (start.size > 1) throw IllegalArgumentException("Multiple start tiles")
-    if (end.size > 1) throw IllegalArgumentException("Multiple finish tiles")
-    graph.value.start = start.first()
-    graph.value.end = end.first()
-}
 
 private fun save(file: File) {
     file.writeText(graph.value.toString())
@@ -35,13 +25,11 @@ private fun save(file: File) {
 
 private fun load(file: File) {
     graph.value = Graph.createFromLines(file.readLines())
-    start.add(graph.value.start!!)
-    end.add(graph.value.end!!)
 }
 
 class Cashfinder: App(MainView::class)
 
-class MainView: View() {
+class MainView: View("Cashfinder") {
     override val root = borderpane {
         top<Menu>()
         center<Workspace>()
@@ -59,7 +47,6 @@ class Menu: View() {
             separator()
             item("Save").action {
                 try {
-                    fixGraph()
                     val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
                     if (files.isNotEmpty()) {
                         save(files.first())
@@ -95,14 +82,16 @@ class Menu: View() {
     }
 }
 
-class CreationMenu: Fragment() {
+class CreationMenu: Fragment("New") {
 
     var graphHeight: TextField by singleAssign()
     var graphWidth: TextField by singleAssign()
+    var allWalls = true
+    var random = false
 
     override val root = hbox {
         form {
-            fieldset("Create new Graph") {
+            fieldset("Create a new Graph") {
                 field("Width") {
                     textfield {
                         filterInput {
@@ -123,6 +112,21 @@ class CreationMenu: Fragment() {
                         graphHeight = this
                     }
                 }
+                field("Place walls everywhere")  {
+                    checkbox {
+                        isSelected = true
+                        action {
+                            allWalls = isSelected
+                        }
+                    }
+                }
+                field("Assign random values")  {
+                    checkbox {
+                        action {
+                            random = isSelected
+                        }
+                    }
+                }
                 button("Create") {
                     useMaxWidth = true
                     action {
@@ -130,7 +134,7 @@ class CreationMenu: Fragment() {
                             val width = graphWidth.text.toInt()
                             val height = graphHeight.text.toInt()
                             if (width > 0 && height > 0) {
-                                graph.value = Graph.createEmpty(width, height)
+                                graph.value = Graph.createEmpty(width, height, allWalls, random)
                                 close()
                             }
                         }
@@ -139,6 +143,16 @@ class CreationMenu: Fragment() {
             }
         }
     }
+}
+
+class SolutionMenu: Fragment() {
+
+    override val root = hbox {
+        form {
+
+        }
+    }
+
 }
 
 class Workspace: Fragment() {
@@ -215,35 +229,40 @@ class Workspace: Fragment() {
                                         }
                                         filterInput {
                                             it.controlNewText.let {
-                                                it in listOf("S", "F", "-") || it.isInt() && it.toInt() in -99..99
+                                                newText ->
+                                                    (newText == "S" && graph.value.start == null)
+                                                    || (newText == "F" && graph.value.end == null)
+                                                    || newText == "-" || (newText.isInt() && newText.toInt() in -99..99)
                                             }
                                         }
                                         setOnKeyReleased {
                                             when (text) {
                                                 "S" -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
-                                                    if (node.isEnd) end.remove(node)
                                                     node.apply {
                                                         value = 0
                                                         isStart = true
                                                         isEnd = false
                                                     }
-                                                    start.add(node)
                                                 }
                                                 "F" -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
-                                                    if (node.isStart) start.remove(node)
                                                     node.apply {
                                                         value = 0
                                                         isStart = false
                                                         isEnd = true
                                                     }
-                                                    end.add(node)
                                                 }
                                                 else -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
-                                                    if (node.isEnd) end.remove(node)
-                                                    if (node.isStart) start.remove(node)
+                                                    if (node.isStart) {
+                                                        node.isStart = false
+                                                        graph.value.start = null
+                                                    }
+                                                    if (node.isEnd) {
+                                                        node.isEnd = false
+                                                        graph.value.end = null
+                                                    }
                                                     node.apply {
                                                         value = if (text == "-" || text == "") 0 else text.toInt()
                                                         isStart = false
