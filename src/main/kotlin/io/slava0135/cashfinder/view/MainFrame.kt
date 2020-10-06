@@ -244,6 +244,7 @@ class Workspace: Fragment() {
                                                         isStart = true
                                                         isEnd = false
                                                     }
+                                                    graph.value.start = node
                                                 }
                                                 "F" -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
@@ -252,6 +253,7 @@ class Workspace: Fragment() {
                                                         isStart = false
                                                         isEnd = true
                                                     }
+                                                    graph.value.end = node
                                                 }
                                                 else -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
