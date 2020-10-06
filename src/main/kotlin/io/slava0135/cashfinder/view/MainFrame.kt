@@ -75,7 +75,7 @@ class Menu: View() {
             }
         }
         menu("Edit").action {
-
+            SolutionMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
         }
         menu("Solve").action {
 
@@ -149,8 +149,7 @@ class CreationMenu: Fragment("New") {
     }
 }
 
-class SolutionMenu: Fragment() {
-
+class SolutionMenu: Fragment("Find Solution") {
     override val root = hbox {
         form {
 
@@ -170,7 +169,7 @@ class Workspace: Fragment() {
     override val root = scrollpane {
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-        setMinSize(800.0, 450.0)
+        setPrefSize(800.0, 450.0)
         content = gridpane {
             isPannable = true
             if (graph.value != null) {
@@ -221,7 +220,7 @@ class Workspace: Fragment() {
                                 }
                                 else -> {
                                     textfield {
-                                        maxWidth = 64.0
+                                        prefWidth = 64.0
                                         prefHeight = 64.0
                                         alignment = Pos.CENTER
                                         background = Background.EMPTY
@@ -267,12 +266,12 @@ class Workspace: Fragment() {
                                                     if (node.isStart) {
                                                         node.isStart = false
                                                         graph.value.start = null
-                                                        background = Background(BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
+                                                        background = Background.EMPTY
                                                     }
                                                     if (node.isEnd) {
                                                         node.isEnd = false
                                                         graph.value.end = null
-                                                        background = Background(BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
+                                                        background = Background.EMPTY
                                                     }
                                                     node.apply {
                                                         value = if (text == "-" || text == "") 0 else text.toInt()
