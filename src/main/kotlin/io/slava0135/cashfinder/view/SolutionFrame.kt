@@ -1,6 +1,7 @@
 package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.SolvedGraph
+import io.slava0135.cashfinder.model.SolvedWall
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
@@ -40,12 +41,22 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
                             }
                             y % 2 == 0 -> {
                                 rectangle(width = 64, height = 8).apply {
-                                    fill = if (y == 0 || y == graph.grid[0].size * 2 || graph.walls[x / 2][y / 2].up) Color.BLACK else Color.WHITE
+                                    fill = when {
+                                        y == 0 || y == graph.grid[0].size * 2 -> Color.BLACK
+                                        graph.walls[x / 2][y / 2].up == SolvedWall.WallState.WALL -> Color.BLACK
+                                        graph.walls[x / 2][y / 2].up == SolvedWall.WallState.ON_PATH -> Color.LIGHTGREEN
+                                        else -> Color.WHITE
+                                    }
                                 }
                             }
                             x % 2 == 0 -> {
                                 rectangle(width = 8, height = 64).apply {
-                                    fill = if (x == 0 || x == graph.grid.size * 2 || graph.walls[x / 2][y / 2].left) Color.BLACK else Color.WHITE
+                                    fill = when {
+                                        x == 0 || x == graph.grid.size * 2 -> Color.BLACK
+                                        graph.walls[x / 2][y / 2].left == SolvedWall.WallState.WALL -> Color.BLACK
+                                        graph.walls[x / 2][y / 2].left == SolvedWall.WallState.ON_PATH -> Color.LIGHTGREEN
+                                        else -> Color.WHITE
+                                    }
                                 }
                             }
                             else -> {

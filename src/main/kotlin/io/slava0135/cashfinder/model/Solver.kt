@@ -1,5 +1,7 @@
 package io.slava0135.cashfinder.model
 
+class Solution(val nodes: List<Node>)
+
 enum class Solver(val type: String, private val function: (Graph, Int) -> SolvedGraph) {
     BRUTEFORCE("Precise", ::bruteforce);
 
