@@ -1,6 +1,8 @@
 package io.slava0135.cashfinder.model
 
-class Solution(val nodes: List<Node>)
+import java.util.ArrayDeque
+
+class Solution(val nodes: List<Node>, val initial: Int, val score: Int?)
 
 enum class Solver(val type: String, private val function: (Graph, Int) -> SolvedGraph) {
     BRUTEFORCE("Precise", ::bruteforce);
@@ -10,5 +12,27 @@ enum class Solver(val type: String, private val function: (Graph, Int) -> Solved
 }
 
 private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
-    TODO()
+    var best: Pair<List<Node>, Int>? = null
+    val path = ArrayDeque<Node>()
+    path.add(graph.start!!)
+    fun next(node: Node, value: Int) {
+        if (node.isEnd) {
+            if (best == null || best!!.second < value) {
+                best = Pair(path.toList(), value)
+            }
+        } else {
+            for (other in node.others) {
+                val newValue = value + other.value
+                if (other !in path && newValue >= 0) {
+                    path.addLast(other)
+                    next(other, newValue)
+                    path.removeLast()
+                }
+            }
+        }
+    }
+    next(graph.start!!, initial)
+    return if (best == null) {
+        SolvedGraph(graph, Solution(emptyList(), initial, null))
+    } else SolvedGraph(graph, Solution(best!!.first.toList(), initial, best!!.second))
 }

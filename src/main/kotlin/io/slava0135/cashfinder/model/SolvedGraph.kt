@@ -19,7 +19,7 @@ class SolvedWall {
     }
 }
 
-class SolvedGraph(graph: Graph, solution: Solution) {
+class SolvedGraph(graph: Graph, val solution: Solution) {
     val width = graph.width
     val height = graph.height
 
@@ -48,6 +48,7 @@ class SolvedGraph(graph: Graph, solution: Solution) {
         var head: Node
         do {
             head = nodes.next()
+            grid[head.position.x][head.position.y].isOnPath = true
             when {
                 tail.position.x > head.position.x -> {
                     walls[tail.position.x][tail.position.y].left = SolvedWall.WallState.ON_PATH
@@ -67,7 +68,6 @@ class SolvedGraph(graph: Graph, solution: Solution) {
                 }
             }
             tail = head
-            grid[tail.position.x][tail.position.y].isOnPath = true
         } while (nodes.hasNext())
     }
 }

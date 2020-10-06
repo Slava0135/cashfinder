@@ -200,7 +200,7 @@ class Graph private constructor(val width: Int, val height: Int) {
         }
     }
 
-    private fun toList(): List<Node> {
+    fun toList(): List<Node> {
         val list = mutableListOf<Node>()
         for (row in grid) {
             for (node in row) {
