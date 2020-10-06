@@ -50,6 +50,7 @@ class Menu: View() {
             separator()
             item("Save").action {
                 try {
+                    graph.value.validate()
                     val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
                     if (files.isNotEmpty()) {
                         save(files.first())

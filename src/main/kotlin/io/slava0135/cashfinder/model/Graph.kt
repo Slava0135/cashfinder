@@ -44,7 +44,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                 val generator = Random()
                 for (x in graph.grid.indices) {
                     for (y in graph.grid[0].indices) {
-                        graph.grid[x][y] = Node(generator.nextInt(199) - 99, Position(x, y))
+                        graph.grid[x][y] = Node(generator.nextInt(51) - 25, Position(x, y))
                     }
                 }
             } else {
@@ -150,8 +150,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                 }
                 x = 0
             }
-            if (graph.start == null) throw IllegalArgumentException("No start is present")
-            if (graph.end == null) throw IllegalArgumentException("No end is present")
+            graph.validate()
             generateOuterWalls(graph)
             return graph
         }
@@ -310,8 +309,8 @@ class Graph private constructor(val width: Int, val height: Int) {
 
     override fun toString(): String = toLines().joinToString("\n")
 
-    private fun validate() {
-        if (start == null) throw IllegalStateException("No start is present")
-        if (end == null) throw IllegalStateException("No end is present")
+    fun validate() {
+        if (start == null) throw IllegalStateException("Start is not found")
+        if (end == null) throw IllegalStateException("Finish is not found")
     }
 }
