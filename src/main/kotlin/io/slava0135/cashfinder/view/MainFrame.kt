@@ -2,12 +2,15 @@ package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.Graph
 import io.slava0135.cashfinder.model.Node
+import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.control.RadioButton
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
 import javafx.scene.layout.Background
+import javafx.scene.layout.BackgroundFill
+import javafx.scene.layout.CornerRadii
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.stage.FileChooser
@@ -218,6 +221,7 @@ class Workspace: Fragment() {
                                 else -> {
                                     textfield {
                                         maxWidth = 64.0
+                                        prefHeight = 64.0
                                         alignment = Pos.CENTER
                                         background = Background.EMPTY
                                         font = Font.font(20.0)
@@ -245,6 +249,7 @@ class Workspace: Fragment() {
                                                         isEnd = false
                                                     }
                                                     graph.value.start = node
+                                                    background = Background(BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY))
                                                 }
                                                 "F" -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
@@ -254,16 +259,19 @@ class Workspace: Fragment() {
                                                         isEnd = true
                                                     }
                                                     graph.value.end = node
+                                                    background = Background(BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY))
                                                 }
                                                 else -> {
                                                     val node = graph.value.grid[x / 2][y / 2]
                                                     if (node.isStart) {
                                                         node.isStart = false
                                                         graph.value.start = null
+                                                        background = Background(BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
                                                     }
                                                     if (node.isEnd) {
                                                         node.isEnd = false
                                                         graph.value.end = null
+                                                        background = Background(BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY))
                                                     }
                                                     node.apply {
                                                         value = if (text == "-" || text == "") 0 else text.toInt()
