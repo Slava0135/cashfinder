@@ -77,7 +77,13 @@ class Menu: View() {
         }
         menu("Solve") {
             item("Solve").action {
-                SolutionMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+                try {
+                    if (graph.value == null) throw IllegalStateException("No Graph is found")
+                    graph.value.validate()
+                    SolutionMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+                } catch(e: Exception) {
+                    error(e.localizedMessage)
+                }
             }
         }
         menu("Help") {
@@ -177,7 +183,8 @@ class SolutionMenu: Fragment("Find a Solution") {
                     action {
                         if (comboBox.selectedItem != null && initial.text.isNotEmpty()) {
                             SolutionFrame(comboBox.selectedItem!!.solve(graph.value, initial.text.toInt()))
-                                    .openWindow(StageStyle.UTILITY, Modality.NONE, false, block = false, resizable = true)
+                                    .openWindow(StageStyle.UTILITY, Modality.NONE, true, block = false, resizable = true)
+                            close()
                         }
                     }
                 }

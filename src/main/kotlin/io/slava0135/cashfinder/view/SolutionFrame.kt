@@ -1,29 +1,55 @@
 package io.slava0135.cashfinder.view
 
+import io.slava0135.cashfinder.model.Solution
 import io.slava0135.cashfinder.model.SolvedGraph
 import io.slava0135.cashfinder.model.SolvedWall
 import javafx.geometry.HPos
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
-import javafx.scene.layout.CornerRadii
-import javafx.scene.layout.GridPane
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import tornadofx.*
 
 class SolutionFrame(private val graph: SolvedGraph) : Fragment("Solution") {
     override val root = borderpane {
-        right<SolutionTotal>()
-        left = SolutionView(graph).root
+        left = SolutionTotal(graph.solution).root
+        right = SolutionView(graph).root
     }
 }
 
-class SolutionTotal : Fragment() {
+class SolutionTotal(solution: Solution) : Fragment() {
     override val root = vbox {
-
+        pane {
+            form {
+                fieldset{
+                    field {
+                        label("Initial money: ${solution.initial}") {
+                            font = Font(20.0)
+                        }
+                    }
+                    if (solution.score != null) {
+                        field {
+                            label("Total money: ${solution.score}") {
+                                font = Font(20.0)
+                            }
+                        }
+                        field() {
+                            label("Path length: ${solution.nodes.size}") {
+                                font = Font(20.0)
+                            }
+                        }
+                    } else {
+                        field {
+                            label("Solution is not found") {
+                                font = Font(20.0)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
