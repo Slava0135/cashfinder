@@ -288,7 +288,7 @@ class Graph private constructor(val width: Int, val height: Int) {
     override fun toString(): String = toLines().joinToString("\n")
 
     private fun validate() {
-        //if (start == null) throw IllegalStateException("No start is present")
-        //if (end == null) throw IllegalStateException("No end is present")
+        if (start == null) throw IllegalStateException("No start is present")
+        if (end == null) throw IllegalStateException("No end is present")
     }
 }

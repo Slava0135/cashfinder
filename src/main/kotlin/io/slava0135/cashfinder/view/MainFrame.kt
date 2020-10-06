@@ -1,6 +1,7 @@
 package io.slava0135.cashfinder.view
 
 import io.slava0135.cashfinder.model.Graph
+import io.slava0135.cashfinder.model.Node
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.TextField
@@ -14,15 +15,28 @@ import tornadofx.*
 import java.io.File
 import java.lang.IllegalStateException
 
-val graph = objectProperty<Graph>()
+private val graph = objectProperty<Graph>()
+private val start = mutableSetOf<Node>()
+private val end = mutableSetOf<Node>()
 
-fun save(file: File) {
+private fun fixGraph() {
     if (graph.value == null) throw IllegalStateException("No graph is present")
+    if (start.size == 0) throw IllegalStateException("No start is present")
+    if (end.size == 0) throw IllegalStateException("No end is present")
+    if (start.size > 1) throw IllegalArgumentException("Multiple start tiles")
+    if (end.size > 1) throw IllegalArgumentException("Multiple finish tiles")
+    graph.value.start = start.first()
+    graph.value.end = end.first()
+}
+
+private fun save(file: File) {
     file.writeText(graph.value.toString())
 }
 
-fun load(file: File) {
+private fun load(file: File) {
     graph.value = Graph.createFromLines(file.readLines())
+    start.add(graph.value.start!!)
+    end.add(graph.value.end!!)
 }
 
 class Cashfinder: App(MainView::class)
@@ -43,13 +57,14 @@ class Menu: View() {
                 }
             }
             item("Save").action {
-                val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
-                if (files.isNotEmpty()) {
-                    try {
+                try {
+                    fixGraph()
+                    val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
+                    if (files.isNotEmpty()) {
                         save(files.first())
-                    } catch (e: Exception) {
-                        error(e.localizedMessage)
                     }
+                } catch (e: Exception) {
+                    error(e.localizedMessage)
                 }
             }
             item("Load").action {
@@ -202,21 +217,30 @@ class Workspace: Fragment() {
                                         setOnKeyReleased {
                                             when (text) {
                                                 "S" -> {
-                                                    graph.value.grid[x / 2][y / 2].apply {
+                                                    val node = graph.value.grid[x / 2][y / 2]
+                                                    if (node.isEnd) end.remove(node)
+                                                    node.apply {
                                                         value = 0
                                                         isStart = true
                                                         isEnd = false
                                                     }
+                                                    start.add(node)
                                                 }
                                                 "F" -> {
-                                                    graph.value.grid[x / 2][y / 2].apply {
+                                                    val node = graph.value.grid[x / 2][y / 2]
+                                                    if (node.isStart) start.remove(node)
+                                                    node.apply {
                                                         value = 0
                                                         isStart = false
                                                         isEnd = true
                                                     }
+                                                    end.add(node)
                                                 }
                                                 else -> {
-                                                    graph.value.grid[x / 2][y / 2].apply {
+                                                    val node = graph.value.grid[x / 2][y / 2]
+                                                    if (node.isEnd) end.remove(node)
+                                                    if (node.isStart) start.remove(node)
+                                                    node.apply {
                                                         value = if (text == "-" || text == "") 0 else text.toInt()
                                                         isStart = false
                                                         isEnd = false
