@@ -27,9 +27,6 @@ class SolvedGraph(graph: Graph, val solution: Solution) {
     val walls = Array(width) { Array(height) { SolvedWall() } }
 
     init {
-        grid[graph.start!!.position.x][graph.start!!.position.y].isStart = true
-        grid[graph.end!!.position.x][graph.end!!.position.y].isEnd = true
-
         for (x in 0 until width) {
             for (y in 0 until height) {
                 walls[x][y].apply {
@@ -41,6 +38,9 @@ class SolvedGraph(graph: Graph, val solution: Solution) {
                 grid[x][y] = SolvedNode(graph.grid[x][y].value)
             }
         }
+
+        grid[graph.start!!.position.x][graph.start!!.position.y].isStart = true
+        grid[graph.end!!.position.x][graph.end!!.position.y].isEnd = true
 
         if (solution.nodes.isNotEmpty()) {
             val nodes = solution.nodes.iterator()

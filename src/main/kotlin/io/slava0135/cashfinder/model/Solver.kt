@@ -18,7 +18,7 @@ private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
     path.add(graph.start!!)
     fun next(node: Node, value: Int) {
         if (node.isEnd) {
-            if (best == null || best!!.second < value) {
+            if (best == null || best!!.second < value || (best!!.second == value && best!!.first.size > path.size)) {
                 best = Pair(path.toList(), value)
             }
         } else {
