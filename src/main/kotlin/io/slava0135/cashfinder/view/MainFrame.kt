@@ -56,6 +56,7 @@ class Menu: View() {
                     CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                 }
             }
+            separator()
             item("Save").action {
                 try {
                     fixGraph()
@@ -81,6 +82,9 @@ class Menu: View() {
                     }
                 }
             }
+        }
+        menu("Edit").action {
+
         }
         menu("Solve").action {
 
