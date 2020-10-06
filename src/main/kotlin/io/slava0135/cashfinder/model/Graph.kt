@@ -179,7 +179,7 @@ class Graph private constructor(val width: Int, val height: Int) {
     }
 
     //build dependencies in grid using walls
-    private fun link() {
+    fun link() {
         for (y in 0 until height) {
             for (x in 0 until width) {
                 val node = grid[x][y]

@@ -47,6 +47,7 @@ class Menu: View() {
             separator()
             item("Save").action {
                 try {
+                    if (graph.value == null) throw IllegalStateException("No Graph is found")
                     graph.value.validate()
                     val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
                     if (files.isNotEmpty()) {
@@ -250,13 +251,21 @@ class Workspace: Fragment() {
                                         prefWidth = 64.0
                                         prefHeight = 64.0
                                         alignment = Pos.CENTER
-                                        background = Background.EMPTY
                                         font = Font.font(20.0)
                                         val elem = grid[x / 2][y / 2]
                                         text = when {
-                                            elem.isStart -> "S"
-                                            elem.isEnd -> "F"
-                                            else -> elem.value.toString()
+                                            elem.isStart -> {
+                                                background = Background(BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY))
+                                                "S"
+                                            }
+                                            elem.isEnd -> {
+                                                background = Background(BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY))
+                                                "F"
+                                            }
+                                            else -> {
+                                                background = Background.EMPTY
+                                                elem.value.toString()
+                                            }
                                         }
                                         filterInput {
                                             it.controlNewText.let {

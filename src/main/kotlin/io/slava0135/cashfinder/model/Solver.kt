@@ -14,6 +14,7 @@ enum class Solver(val type: String, private val function: (Graph, Int) -> Solved
 private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
     var best: Pair<List<Node>, Int>? = null
     val path = ArrayDeque<Node>()
+    graph.link()
     path.add(graph.start!!)
     fun next(node: Node, value: Int) {
         if (node.isEnd) {

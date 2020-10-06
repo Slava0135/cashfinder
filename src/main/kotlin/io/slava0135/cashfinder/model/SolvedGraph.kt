@@ -42,32 +42,34 @@ class SolvedGraph(graph: Graph, val solution: Solution) {
             }
         }
 
-        val nodes = solution.nodes.iterator()
-        var tail = nodes.next()
-        grid[tail.position.x][tail.position.y].isOnPath = true
-        var head: Node
-        do {
-            head = nodes.next()
-            grid[head.position.x][head.position.y].isOnPath = true
-            when {
-                tail.position.x > head.position.x -> {
-                    walls[tail.position.x][tail.position.y].left = SolvedWall.WallState.ON_PATH
-                    walls[head.position.x][head.position.y].right = SolvedWall.WallState.ON_PATH
+        if (solution.nodes.isNotEmpty()) {
+            val nodes = solution.nodes.iterator()
+            var tail = nodes.next()
+            grid[tail.position.x][tail.position.y].isOnPath = true
+            var head: Node
+            do {
+                head = nodes.next()
+                grid[head.position.x][head.position.y].isOnPath = true
+                when {
+                    tail.position.x > head.position.x -> {
+                        walls[tail.position.x][tail.position.y].left = SolvedWall.WallState.ON_PATH
+                        walls[head.position.x][head.position.y].right = SolvedWall.WallState.ON_PATH
+                    }
+                    tail.position.x < head.position.x -> {
+                        walls[tail.position.x][tail.position.y].right = SolvedWall.WallState.ON_PATH
+                        walls[head.position.x][head.position.y].left = SolvedWall.WallState.ON_PATH
+                    }
+                    tail.position.y > head.position.y -> {
+                        walls[tail.position.x][tail.position.y].up = SolvedWall.WallState.ON_PATH
+                        walls[head.position.x][head.position.y].down = SolvedWall.WallState.ON_PATH
+                    }
+                    tail.position.y < head.position.y -> {
+                        walls[tail.position.x][tail.position.y].down = SolvedWall.WallState.ON_PATH
+                        walls[head.position.x][head.position.y].up = SolvedWall.WallState.ON_PATH
+                    }
                 }
-                tail.position.x < head.position.x -> {
-                    walls[tail.position.x][tail.position.y].right = SolvedWall.WallState.ON_PATH
-                    walls[head.position.x][head.position.y].left = SolvedWall.WallState.ON_PATH
-                }
-                tail.position.y > head.position.y -> {
-                    walls[tail.position.x][tail.position.y].up = SolvedWall.WallState.ON_PATH
-                    walls[head.position.x][head.position.y].down = SolvedWall.WallState.ON_PATH
-                }
-                tail.position.y < head.position.y -> {
-                    walls[tail.position.x][tail.position.y].down = SolvedWall.WallState.ON_PATH
-                    walls[head.position.x][head.position.y].up = SolvedWall.WallState.ON_PATH
-                }
-            }
-            tail = head
-        } while (nodes.hasNext())
+                tail = head
+            } while (nodes.hasNext())
+        }
     }
 }
