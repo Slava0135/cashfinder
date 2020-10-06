@@ -4,8 +4,6 @@ import java.util.*
 
 data class Position(val x: Int, val y: Int)
 
-class Result(val cash: Int, val path: List<Position>)
-
 class Node(var value: Int, val position: Position) {
     val others = mutableListOf<Node>()
     var isEnd = false
@@ -178,54 +176,6 @@ class Graph private constructor(val width: Int, val height: Int) {
                 graph.walls[i][graph.height - 1].down = true
             }
         }
-    }
-
-    fun solve(): Result {
-        validate()
-        link()
-
-        val values = mutableMapOf<Node, Int>()
-        values[start!!] = 0
-        val parents = mutableMapOf<Node, Node?>()
-        parents[start!!] = null
-
-        val proceeded = mutableSetOf<Node>()
-        val inProgress = ArrayDeque<Node>()
-        val untouched = toList().toMutableSet()
-
-        inProgress.add(start!!)
-        untouched.remove(start!!)
-        while(inProgress.isNotEmpty()) {
-            val node = inProgress.pollFirst()
-            proceeded.add(node)
-            for (other in node.others) {
-                if (other in untouched) {
-                    values[other] = values[node]!! + other.value
-                    parents[other] = node
-                    inProgress.addLast(other)
-                    untouched.remove(other)
-                } else {
-                    if ((generateSequence(node) { parents[it] }.all { it != other })
-                            && (values[other]!! < values[node]!! + other.value)) {
-                        if (other in proceeded) {
-                            inProgress.addFirst(other)
-                            proceeded.remove(other)
-                        }
-                        values[other] = values[node]!! + other.value
-                        parents[other] = node
-                    }
-                }
-            }
-        }
-
-        var node = end!!
-        val path = mutableListOf(node.position)
-        while (parents[node] != null) {
-            node = parents[node]!!
-            path.add(node.position)
-        }
-
-        return Result(values[end!!]!!, path.reversed())
     }
 
     //build dependencies in grid using walls
