@@ -196,10 +196,10 @@ class Workspace: Fragment() {
                                         }
                                         filterInput {
                                             it.controlNewText.let {
-                                                it in listOf("S", "F") || it.isInt() && it.toInt() in -99..99
+                                                it in listOf("S", "F", "-") || it.isInt() && it.toInt() in -99..99
                                             }
                                         }
-                                        setOnAction {
+                                        setOnKeyReleased {
                                             when (text) {
                                                 "S" -> {
                                                     graph.value.grid[x / 2][y / 2].apply {
@@ -217,7 +217,7 @@ class Workspace: Fragment() {
                                                 }
                                                 else -> {
                                                     graph.value.grid[x / 2][y / 2].apply {
-                                                        value = if (text == "-") 0 else text.toInt()
+                                                        value = if (text == "-" || text == "") 0 else text.toInt()
                                                         isStart = false
                                                         isEnd = false
                                                     }
