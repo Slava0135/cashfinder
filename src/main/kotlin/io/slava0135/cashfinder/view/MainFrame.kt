@@ -173,8 +173,11 @@ class SolutionMenu: Fragment("Find a Solution") {
                 }
                 button("Solve!") {
                     useMaxWidth = true
-                    if (comboBox.selectedItem != null && initial.text.isNotEmpty()) {
-                        SolutionFrame(comboBox.selectedItem!!.solve(graph.value, initial.text.toInt()))
+                    action {
+                        if (comboBox.selectedItem != null && initial.text.isNotEmpty()) {
+                            SolutionFrame(comboBox.selectedItem!!.solve(graph.value, initial.text.toInt()))
+                                    .openWindow(StageStyle.UTILITY, Modality.NONE, false, block = false, resizable = true)
+                        }
                     }
                 }
             }
