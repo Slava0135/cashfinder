@@ -7,14 +7,17 @@ class Solution(val nodes: List<Node>, val initial: Int, val score: Int?)
 enum class Solver(val type: String, private val function: (Graph, Int) -> SolvedGraph) {
     BRUTEFORCE("Precise", ::bruteforce);
 
-    fun solve(graph: Graph, initial: Int) = function(graph, initial)
+    fun solve(graph: Graph, initial: Int): SolvedGraph {
+        graph.link()
+        return function(graph, initial)
+    }
+
     override fun toString() = type
 }
 
 private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
     var best: Pair<List<Node>, Int>? = null
-    val path = ArrayDeque<Node>()
-    graph.link()
+    val path = LinkedHashSet<Node>()
     path.add(graph.start!!)
     fun next(node: Node, value: Int) {
         if (node.isEnd) {
@@ -25,9 +28,9 @@ private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
             for (other in node.others) {
                 val newValue = value + other.value
                 if (other !in path && newValue >= 0) {
-                    path.addLast(other)
+                    path.add(other)
                     next(other, newValue)
-                    path.removeLast()
+                    path.remove(other)
                 }
             }
         }
