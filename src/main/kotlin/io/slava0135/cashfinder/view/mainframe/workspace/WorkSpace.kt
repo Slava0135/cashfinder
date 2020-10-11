@@ -1,5 +1,6 @@
 package io.slava0135.cashfinder.view.mainframe.workspace
 
+import io.slava0135.cashfinder.AppConfig
 import io.slava0135.cashfinder.view.mainframe.graph
 import javafx.geometry.Insets
 import javafx.geometry.Pos
@@ -24,7 +25,7 @@ class Workspace: Fragment() {
     override val root = scrollpane {
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-        setPrefSize(800.0, 450.0)
+        setPrefSize(AppConfig.Window.prefWidth.toDouble(), AppConfig.Window.prefHeight.toDouble())
         content = gridpane {
             isPannable = true
             if (graph.value != null) {
@@ -33,7 +34,7 @@ class Workspace: Fragment() {
                         for (x in 0..graph.value.grid.size * 2) {
                             when {
                                 y % 2 == 0 && x % 2 == 0 -> {
-                                    rectangle(width = 8, height = 8) { fill = Color.BLACK }
+                                    rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
                                 }
                                 y % 2 == 0 -> {
                                     vWall(this, x, y)
@@ -54,7 +55,7 @@ class Workspace: Fragment() {
 
     private fun vWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
-            rectangle(width = 64, height = 8).apply {
+            rectangle(width = AppConfig.GridPane.baseLength, height = AppConfig.GridPane.baseWidth).apply {
                 fill = if (y == 0 || y == graph.value.grid[0].size * 2 || graph.value.walls[x / 2][y / 2].up) Color.BLACK else Color.WHITE
                 setOnMouseClicked {
                     if (y != 0 && y != graph.value.grid[0].size * 2) {
@@ -75,7 +76,7 @@ class Workspace: Fragment() {
 
     private fun hWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
-            rectangle(width = 8, height = 64).apply {
+            rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseLength).apply {
                 fill = if (x == 0 || x == graph.value.grid.size * 2 || graph.value.walls[x / 2][y / 2].left) Color.BLACK else Color.WHITE
                 setOnMouseClicked {
                     if (x != 0 && x != graph.value.grid.size * 2) {
@@ -97,10 +98,10 @@ class Workspace: Fragment() {
     private fun tile(pane: Pane, x: Int, y: Int) {
         pane.apply {
             textfield {
-                prefWidth = 64.0
-                prefHeight = 64.0
+                prefWidth = AppConfig.GridPane.baseLength.toDouble()
+                prefHeight = AppConfig.GridPane.baseLength.toDouble()
                 alignment = Pos.CENTER
-                font = Font.font(20.0)
+                font = AppConfig.font
                 val elem = graph.value.grid[x / 2][y / 2]
                 text = when {
                     elem.isStart -> {
