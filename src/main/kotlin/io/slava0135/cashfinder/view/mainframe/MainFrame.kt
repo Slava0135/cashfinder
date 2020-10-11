@@ -1,7 +1,8 @@
-package io.slava0135.cashfinder.view
+package io.slava0135.cashfinder.view.mainframe
 
-import io.slava0135.cashfinder.model.Graph
+import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.model.Solver
+import io.slava0135.cashfinder.view.solutionframe.SolutionFrame
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane

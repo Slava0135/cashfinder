@@ -1,8 +1,8 @@
-package io.slava0135.cashfinder.view
+package io.slava0135.cashfinder.view.solutionframe
 
 import io.slava0135.cashfinder.model.Solution
-import io.slava0135.cashfinder.model.SolvedGraph
-import io.slava0135.cashfinder.model.SolvedWall
+import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
+import io.slava0135.cashfinder.model.solvedgraph.SolvedWall
 import javafx.geometry.HPos
 import javafx.geometry.Insets
 import javafx.geometry.Pos

@@ -1,6 +1,8 @@
 package io.slava0135.cashfinder.model
 
-import java.util.ArrayDeque
+import io.slava0135.cashfinder.model.graph.Graph
+import io.slava0135.cashfinder.model.graph.Node
+import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 
 class Solution(val nodes: List<Node>, val initial: Int, val score: Int?)
 
