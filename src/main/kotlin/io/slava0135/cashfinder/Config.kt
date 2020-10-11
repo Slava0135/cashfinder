@@ -4,15 +4,15 @@ import javafx.scene.text.Font
 
 object AppConfig {
 
-    val font = Font.font(20.0)
+    val font: Font = Font.font(20.0)
 
     object GridPane {
-        val baseLength = 64
-        val baseWidth = 8
+        const val baseLength = 64
+        const val baseWidth = 8
     }
 
     object Window {
-        val prefHeight = 450
-        val prefWidth = 800
+        const val prefHeight = 450
+        const val prefWidth = 800
     }
 }

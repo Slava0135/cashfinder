@@ -1,5 +1,6 @@
 package io.slava0135.cashfinder.view.solutionframe
 
+import io.slava0135.cashfinder.AppConfig
 import io.slava0135.cashfinder.model.Solution
 import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import io.slava0135.cashfinder.model.solvedgraph.SolvedWall
@@ -26,24 +27,24 @@ class SolutionTotal(solution: Solution) : Fragment() {
                 fieldset{
                     field {
                         label("Initial money: ${solution.initial}") {
-                            font = Font(20.0)
+                            font = AppConfig.font
                         }
                     }
                     if (solution.score != null) {
                         field {
                             label("Total money: ${solution.score}") {
-                                font = Font(20.0)
+                                font = AppConfig.font
                             }
                         }
-                        field() {
+                        field {
                             label("Path length: ${solution.nodes.size}") {
-                                font = Font(20.0)
+                                font = AppConfig.font
                             }
                         }
                     } else {
                         field {
                             label("Solution is not found") {
-                                font = Font(20.0)
+                                font = AppConfig.font
                             }
                         }
                     }
@@ -57,7 +58,7 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
     override val root = scrollpane {
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-        setPrefSize(800.0, 450.0)
+        setPrefSize(AppConfig.Window.prefHeight.toDouble(), AppConfig.Window.prefWidth.toDouble())
         content = gridpane {
             isPannable = true
             for (y in 0..graph.height * 2) {
@@ -65,10 +66,10 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
                     for (x in 0..graph.width * 2) {
                         when {
                             y % 2 == 0 && x % 2 == 0 -> {
-                                rectangle(width = 8, height = 8) { fill = Color.BLACK }
+                                rectangle(width = AppConfig.GridPane.baseLength, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
                             }
                             y % 2 == 0 -> {
-                                rectangle(width = 64, height = 8).apply {
+                                rectangle(width = AppConfig.GridPane.baseLength, height = AppConfig.GridPane.baseWidth).apply {
                                     fill = when {
                                         y == 0 || y == graph.height * 2 -> Color.BLACK
                                         graph.walls[x / 2][y / 2].up == SolvedWall.WallState.WALL -> Color.BLACK
@@ -78,7 +79,7 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
                                 }
                             }
                             x % 2 == 0 -> {
-                                rectangle(width = 8, height = 64).apply {
+                                rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseLength).apply {
                                     fill = when {
                                         x == 0 || x == graph.width * 2 -> Color.BLACK
                                         graph.walls[x / 2][y / 2].left == SolvedWall.WallState.WALL -> Color.BLACK
