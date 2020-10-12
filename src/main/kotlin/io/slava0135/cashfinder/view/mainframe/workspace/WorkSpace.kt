@@ -37,10 +37,10 @@ class Workspace: Fragment() {
                                     rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
                                 }
                                 y % 2 == 0 -> {
-                                    vWall(this, x, y)
+                                    hWall(this, x, y)
                                 }
                                 x % 2 == 0 -> {
-                                    hWall(this, x, y)
+                                    vWall(this, x, y)
                                 }
                                 else -> {
                                     tile(this, x, y)
@@ -53,7 +53,7 @@ class Workspace: Fragment() {
         }
     }
 
-    private fun vWall(pane: Pane, x: Int, y: Int) {
+    private fun hWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
             rectangle(width = AppConfig.GridPane.baseLength, height = AppConfig.GridPane.baseWidth).apply {
                 fill = if (y == 0 || y == graph.value.grid[0].size * 2 || graph.value.walls[x / 2][y / 2].up) Color.BLACK else Color.WHITE
@@ -74,7 +74,7 @@ class Workspace: Fragment() {
         }
     }
 
-    private fun hWall(pane: Pane, x: Int, y: Int) {
+    private fun vWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
             rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseLength).apply {
                 fill = if (x == 0 || x == graph.value.grid.size * 2 || graph.value.walls[x / 2][y / 2].left) Color.BLACK else Color.WHITE
