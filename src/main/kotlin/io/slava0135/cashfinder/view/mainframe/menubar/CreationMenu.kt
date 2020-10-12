@@ -23,7 +23,7 @@ class CreationMenu: Fragment("New") {
             gotEverything.value = value && gotWidth
             field = value
         }
-    var gotEverything = booleanProperty(false)
+    var gotEverything = booleanProperty()
 
     override val root = hbox {
         form {

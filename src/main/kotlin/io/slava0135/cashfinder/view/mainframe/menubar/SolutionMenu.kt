@@ -12,7 +12,11 @@ class SolutionMenu: Fragment("Find a Solution") {
 
     private val comboBox = combobox<Solver> {
         items.setAll(*Solver.values())
+        setOnAction {
+            isSelected.value = selectedItem != null
+        }
     }
+    var isSelected = booleanProperty()
     var initial: TextField by singleAssign()
 
     override val root = hbox {
@@ -25,6 +29,7 @@ class SolutionMenu: Fragment("Find a Solution") {
                                 it.isInt() && it.toInt() >= 0
                             }
                         }
+                        text = "0"
                         initial = this
                     }
                 }
@@ -33,12 +38,14 @@ class SolutionMenu: Fragment("Find a Solution") {
                 }
                 button("Solve!") {
                     useMaxWidth = true
+                    enableWhen(isSelected)
                     action {
-                        if (comboBox.selectedItem != null && initial.text.isNotEmpty()) {
-                            SolutionFrame(comboBox.selectedItem!!.solve(graph.value, initial.text.toInt()))
-                                    .openWindow(StageStyle.UTILITY, Modality.NONE, true, block = false, resizable = true)
-                            close()
+                        if (initial.text.isEmpty()) {
+                            initial.text = "0"
                         }
+                        SolutionFrame(comboBox.selectedItem!!.solve(graph.value, initial.text.toInt()))
+                                .openWindow(StageStyle.UTILITY, Modality.NONE, true, block = false, resizable = true)
+                        close()
                     }
                 }
             }
