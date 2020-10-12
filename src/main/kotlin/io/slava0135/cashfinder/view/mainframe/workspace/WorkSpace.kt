@@ -98,10 +98,12 @@ class Workspace: Fragment() {
     private fun tile(pane: Pane, x: Int, y: Int) {
         pane.apply {
             textfield {
+
                 prefWidth = AppConfig.GridPane.baseLength.toDouble()
                 prefHeight = AppConfig.GridPane.baseLength.toDouble()
                 alignment = Pos.CENTER
                 font = AppConfig.font
+
                 val elem = graph.value.grid[x / 2][y / 2]
                 text = when {
                     elem.isStart -> {
@@ -117,6 +119,7 @@ class Workspace: Fragment() {
                         elem.value.toString()
                     }
                 }
+
                 filterInput {
                     it.controlNewText.let {
                         newText ->
@@ -126,6 +129,7 @@ class Workspace: Fragment() {
                                 || (newText.isInt() && newText.toInt() in -AppConfig.Graph.valueLimit..AppConfig.Graph.valueLimit)
                     }
                 }
+
                 setOnKeyReleased {
                     when (text) {
                         "S" -> {

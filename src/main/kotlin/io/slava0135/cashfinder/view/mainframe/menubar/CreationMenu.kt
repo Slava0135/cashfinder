@@ -13,6 +13,18 @@ class CreationMenu: Fragment("New") {
     var allWalls = true
     var random = false
 
+    var gotWidth = false
+        set(value) {
+            gotEverything.value = value && gotHeight
+            field = value
+        }
+    var gotHeight = false
+        set(value) {
+            gotEverything.value = value && gotWidth
+            field = value
+        }
+    var gotEverything = booleanProperty(false)
+
     override val root = hbox {
         form {
             fieldset("Create a new Graph") {
@@ -23,6 +35,9 @@ class CreationMenu: Fragment("New") {
                                 it.isInt() && it.toInt() in 1..AppConfig.Graph.sizeLimit
                             }
                         }
+                        setOnKeyReleased {
+                            gotWidth = (text.isInt() && text.toInt() in 1..AppConfig.Graph.sizeLimit)
+                        }
                         graphWidth = this
                     }
                 }
@@ -32,6 +47,9 @@ class CreationMenu: Fragment("New") {
                             it.controlNewText.let {
                                 it.isInt() && it.toInt() in 1..AppConfig.Graph.sizeLimit
                             }
+                        }
+                        setOnKeyReleased {
+                            gotHeight = (text.isInt() && text.toInt() in 1..AppConfig.Graph.sizeLimit)
                         }
                         graphHeight = this
                     }
@@ -53,6 +71,7 @@ class CreationMenu: Fragment("New") {
                 }
                 button("Create!") {
                     useMaxWidth = true
+                    enableWhen(gotEverything)
                     action {
                         if (graphHeight.text.isNotEmpty() && graphWidth.text.isNotEmpty()) {
                             val width = graphWidth.text.toInt()
