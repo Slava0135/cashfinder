@@ -1,4 +1,5 @@
 package io.slava0135.cashfinder.model.graph
+import io.slava0135.cashfinder.AppConfig
 import java.lang.Integer.max
 import java.util.*
 
@@ -22,7 +23,8 @@ class Graph private constructor(val width: Int, val height: Int) {
                 val generator = Random()
                 for (x in graph.grid.indices) {
                     for (y in graph.grid[0].indices) {
-                        graph.grid[x][y] = Node(generator.nextInt(51) - 25, Position(x, y))
+                        graph.grid[x][y] =
+                                Node(generator.nextInt(AppConfig.Graph.randomLimit * 2 + 1) - AppConfig.Graph.randomLimit, Position(x, y))
                     }
                 }
             } else {

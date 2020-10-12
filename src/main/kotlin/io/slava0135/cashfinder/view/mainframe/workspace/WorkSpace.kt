@@ -122,7 +122,8 @@ class Workspace: Fragment() {
                         newText ->
                         (newText == "S" && graph.value.start == null)
                                 || (newText == "F" && graph.value.end == null)
-                                || newText == "-" || (newText.isInt() && newText.toInt() in -99..99)
+                                || newText == "-"
+                                || (newText.isInt() && newText.toInt() in -AppConfig.Graph.valueLimit..AppConfig.Graph.valueLimit)
                     }
                 }
                 setOnKeyReleased {

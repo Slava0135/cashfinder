@@ -1,5 +1,6 @@
 package io.slava0135.cashfinder.view.mainframe.menubar
 
+import io.slava0135.cashfinder.AppConfig
 import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.view.mainframe.graph
 import javafx.scene.control.TextField
@@ -19,7 +20,7 @@ class CreationMenu: Fragment("New") {
                     textfield {
                         filterInput {
                             it.controlNewText.let {
-                                it.isInt() && it.toInt() in 1..50
+                                it.isInt() && it.toInt() in 1..AppConfig.Graph.sizeLimit
                             }
                         }
                         graphWidth = this
@@ -29,7 +30,7 @@ class CreationMenu: Fragment("New") {
                     textfield {
                         filterInput {
                             it.controlNewText.let {
-                                it.isInt() && it.toInt() in 1..50
+                                it.isInt() && it.toInt() in 1..AppConfig.Graph.sizeLimit
                             }
                         }
                         graphHeight = this
