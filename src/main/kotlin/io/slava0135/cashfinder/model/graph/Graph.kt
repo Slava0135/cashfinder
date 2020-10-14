@@ -243,8 +243,8 @@ class Graph private constructor(val width: Int, val height: Int) {
         val newGraph = createEmpty(left + right + width, up + down + height)
         for (col in max(0, -left) until min(width, width + right)) {
             for (row in max(0, -up) until min(height, height + down)) {
-                val newX = col + if (left > 0) left else 0
-                val newY = row + if (up > 0) up else 0
+                val newX = col + left
+                val newY = row + up
                 newGraph.grid[newX][newY] = Node(grid[col][row].value, Position(newX, newY)).apply {
                     isStart = grid[col][row].isStart
                     isEnd = grid[col][row].isEnd
@@ -266,11 +266,4 @@ class Graph private constructor(val width: Int, val height: Int) {
         if (start == null) throw IllegalStateException("Start is not found")
         if (end == null) throw IllegalStateException("Finish is not found")
     }
-}
-
-fun main() {
-    val a = Graph.createEmpty(5, 5, true, true)
-    println(a)
-    println()
-    println(a.offset(-1))
 }
