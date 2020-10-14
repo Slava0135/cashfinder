@@ -11,6 +11,12 @@ class SolvedGraph(graph: Graph, val solution: Solution) {
     val grid = Array(width) { Array(height) { SolvedNode(0) } }
     val walls = Array(width) { Array(height) { SolvedWall() } }
 
+    companion object {
+        fun createFromLines(lines: List<String>) {
+
+        }
+    }
+
     init {
         for (x in 0 until width) {
             for (y in 0 until height) {

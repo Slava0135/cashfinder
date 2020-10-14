@@ -6,11 +6,11 @@ import java.io.File
 
 internal val graph = objectProperty<Graph>()
 
-internal fun save(file: File) {
-    graph.value.validate()
-    file.writeText(graph.value.toString())
+internal fun Graph.save(file: File) {
+    validate()
+    file.writeText(toString())
 }
 
-internal fun load(file: File) {
-    graph.value = Graph.createFromLines(file.readLines())
+internal fun Graph.Factory.load(file: File) {
+    graph.value = createFromLines(file.readLines())
 }

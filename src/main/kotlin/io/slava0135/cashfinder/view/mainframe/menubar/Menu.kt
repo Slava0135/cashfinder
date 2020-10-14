@@ -1,5 +1,6 @@
 package io.slava0135.cashfinder.view.mainframe.menubar
 
+import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.view.mainframe.graph
 import io.slava0135.cashfinder.view.mainframe.load
 import io.slava0135.cashfinder.view.mainframe.save
@@ -21,9 +22,12 @@ class Menu: View() {
                 try {
                     if (graph.value == null) throw IllegalStateException("No Graph is found")
                     graph.value.validate()
-                    val files = chooseFile("Select Output File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
+                    val files =
+                            chooseFile(
+                                    "Select Output File",
+                                    arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
                     if (files.isNotEmpty()) {
-                        save(files.first())
+                        graph.value.save(files.first())
                     }
                 } catch (e: Exception) {
                     error(e.localizedMessage)
@@ -31,11 +35,14 @@ class Menu: View() {
             }
             item("Load").action {
                 confirm("Are you sure?", "Current grid will be deleted!") {
-                    val files = chooseFile("Select Input File", arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
+                    val files =
+                            chooseFile(
+                                    "Select Input File",
+                                    arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
                     if (files.isNotEmpty()) {
                         if (graph.value == null) {
                             try {
-                                load(files.first())
+                                Graph.load(files.first())
                             } catch (e: Exception) {
                                 error(e.localizedMessage)
                             }
@@ -45,7 +52,7 @@ class Menu: View() {
             }
         }
         menu("Edit") {
-
+            item("Change size")
         }
         menu("Solve") {
             item("Solve").action {
@@ -57,9 +64,11 @@ class Menu: View() {
                     error(e.localizedMessage)
                 }
             }
+            separator()
+            item("Import Solution File")
         }
         menu("Help") {
-
+            item("About the program")
         }
     }
 }

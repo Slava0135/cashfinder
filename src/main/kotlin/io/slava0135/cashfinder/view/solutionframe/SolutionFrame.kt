@@ -5,7 +5,7 @@ import tornadofx.*
 
 class SolutionFrame(private val graph: SolvedGraph) : Fragment("Solution") {
     override val root = borderpane {
-        left = SolutionTotal(graph.solution).root
+        left = SolutionTotal(graph).root
         right = SolutionView(graph).root
     }
 }
