@@ -7,6 +7,7 @@ import java.io.File
 internal val graph = objectProperty<Graph>()
 
 internal fun save(file: File) {
+    graph.value.validate()
     file.writeText(graph.value.toString())
 }
 

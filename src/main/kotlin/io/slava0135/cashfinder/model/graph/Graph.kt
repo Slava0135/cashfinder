@@ -1,6 +1,7 @@
 package io.slava0135.cashfinder.model.graph
 import io.slava0135.cashfinder.AppConfig
 import java.lang.Integer.max
+import java.lang.Integer.min
 import java.util.*
 
 class Graph private constructor(val width: Int, val height: Int) {
@@ -14,7 +15,7 @@ class Graph private constructor(val width: Int, val height: Int) {
         private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
         private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +||+|+|||+
 
-        fun createEmpty(width: Int, height: Int, allWalls: Boolean, random: Boolean): Graph {
+        fun createEmpty(width: Int, height: Int, allWalls: Boolean = false, random: Boolean = false): Graph {
             require(width > 0 && height > 0)
             val graph = Graph(width, height)
             if (allWalls) generateAllWalls(graph)
@@ -182,7 +183,7 @@ class Graph private constructor(val width: Int, val height: Int) {
         }
     }
 
-    fun toList(): List<Node> {
+    fun nodeList(): List<Node> {
         val list = mutableListOf<Node>()
         for (row in grid) {
             for (node in row) {
@@ -193,8 +194,6 @@ class Graph private constructor(val width: Int, val height: Int) {
     }
 
     fun toLines(): List<String> {
-        validate()
-
         val spaces = IntArray(width)
         for (y in 0 until height) {
             for (x in grid.indices) {
@@ -239,10 +238,39 @@ class Graph private constructor(val width: Int, val height: Int) {
         return result
     }
 
+    fun offset(up: Int = 0, right: Int = 0, down: Int = 0, left: Int = 0): Graph {
+        require(up + down + height > 0 && left + right + width > 0)
+        val newGraph = createEmpty(left + right + width, up + down + height)
+        for (col in max(0, -left) until min(width, width + right)) {
+            for (row in max(0, -up) until min(height, height + down)) {
+                val newX = col + if (left > 0) left else 0
+                val newY = row + if (up > 0) up else 0
+                newGraph.grid[newX][newY] = Node(grid[col][row].value, Position(newX, newY)).apply {
+                    isStart = grid[col][row].isStart
+                    isEnd = grid[col][row].isEnd
+                }
+                newGraph.walls[newX][newY] = Wall().apply {
+                    this.up = walls[col][row].up
+                    this.down = walls[col][row].down
+                    this.left = walls[col][row].left
+                    this.right = walls[col][row].right
+                }
+            }
+        }
+        return newGraph
+    }
+
     override fun toString(): String = toLines().joinToString("\n")
 
     fun validate() {
         if (start == null) throw IllegalStateException("Start is not found")
         if (end == null) throw IllegalStateException("Finish is not found")
     }
+}
+
+fun main() {
+    val a = Graph.createEmpty(5, 5, true, true)
+    println(a)
+    println()
+    println(a.offset(-1))
 }
