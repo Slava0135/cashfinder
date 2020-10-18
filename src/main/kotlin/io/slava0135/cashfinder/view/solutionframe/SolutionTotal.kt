@@ -6,6 +6,7 @@ import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import io.slava0135.cashfinder.view.mainframe.save
 import javafx.stage.FileChooser
 import tornadofx.*
+import java.io.File
 
 class SolutionTotal(graph: SolvedGraph) : Fragment() {
 
@@ -31,13 +32,15 @@ class SolutionTotal(graph: SolvedGraph) : Fragment() {
                                 font = AppConfig.font
                             }
                         }
-                        button("Save result").action {
+                        button("Save solution").action {
                             val files =
                                     chooseFile(
                                             "Select Output File",
                                             arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")), mode = FileChooserMode.Save)
                             if (files.isNotEmpty()) {
-                                graph.save(files.first())
+                                graph.save(
+                                        if (files.first().absolutePath.endsWith(".sol")) files.first()
+                                        else File(files.first().canonicalPath + ".sol"))
                             }
                         }
                     } else {

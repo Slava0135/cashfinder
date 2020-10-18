@@ -13,7 +13,7 @@ class Graph private constructor(val width: Int, val height: Int) {
 
     companion object Factory {
         private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
-        private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +||+|+|||+
+        private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +|+|+|+
 
         fun createEmpty(width: Int, height: Int, allWalls: Boolean = false, random: Boolean = false): Graph {
             require(width > 0 && height > 0)

@@ -39,6 +39,6 @@ private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
     }
     next(graph.start!!, initial)
     return if (best == null) {
-        SolvedGraph(graph, Solution(emptyList(), initial, null))
-    } else SolvedGraph(graph, Solution(best!!.first.toList(), initial, best!!.second))
+        SolvedGraph.createFromSolution(graph, Solution(emptyList(), initial, null))
+    } else SolvedGraph.createFromSolution(graph, Solution(best!!.first.toList(), initial, best!!.second))
 }
