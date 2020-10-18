@@ -2,6 +2,7 @@ package io.slava0135.cashfinder.view.mainframe.menubar
 
 import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
+import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph.Factory.load
 import io.slava0135.cashfinder.view.mainframe.graph
 import io.slava0135.cashfinder.view.mainframe.load
 import io.slava0135.cashfinder.view.mainframe.save
@@ -82,7 +83,7 @@ class Menu: View() {
                                 arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")))
                 if (files.isNotEmpty()) {
                     try {
-                        SolvedGraph.Factory.load(files.first())
+                        SolutionFrame(load(files.first())).openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                     } catch (e: Exception) {
                         error(e.localizedMessage)
                     }

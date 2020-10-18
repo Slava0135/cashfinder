@@ -80,8 +80,8 @@ class SolvedGraph(val width: Int, val height: Int) {
         fun createFromLines(rawLines: List<String>): SolvedGraph {
 
             require(rawLines.isNotEmpty())
-            val data = rawLines.first().split(" ")
-            //val solution = Solution(emptyList(), data.first().toInt(), data.lastOrNull()?.toInt())
+            val data = rawLines.first().split(";")
+            val solution = Solution(emptyList(), data.first().toInt(), data.lastOrNull()?.toInt())
 
             val lines = rawLines.drop(1)
 
@@ -96,7 +96,7 @@ class SolvedGraph(val width: Int, val height: Int) {
                 throw IllegalArgumentException("Bad upper/bottom border")
             for (row in lines.indices) {
                 if (row % 2 == 0) {
-                    if (rowRegex.matches(lines[row]) || lines[row].replace(" ", "-") != lines.first())
+                    if (!rowRegex.matches(lines[row]) || lines[row].replace(Regex("""[# ]"""), "-") != lines.first())
                         throw IllegalArgumentException("Row #$row is wrong")
                 }
             }
@@ -117,7 +117,7 @@ class SolvedGraph(val width: Int, val height: Int) {
             for (col in lines[0].indices) {
                 val line = rotate(col)
                 if (col in crosses) {
-                    if (colRegex.matches(line))
+                    if (!colRegex.matches(line))
                         throw IllegalArgumentException("Column #$col is wrong")
                 }
             }
@@ -141,7 +141,7 @@ class SolvedGraph(val width: Int, val height: Int) {
                     if (col == cross) {
                         //not including most left and right walls
                         if (col < len - 1) {
-                            when(lines[row][col]) {
+                            when (lines[row][col]) {
                                 '|' -> {
                                     graph.walls[x + 1][y].left = SolvedWall.WallState.WALL
                                     graph.walls[x][y].right = SolvedWall.WallState.WALL
@@ -194,7 +194,20 @@ class SolvedGraph(val width: Int, val height: Int) {
                 }
                 x = 0
             }
+
+            for (i in 0 until graph.width) {
+                for (j in 0 until graph.height) {
+                    if (graph.walls[j][i].up == SolvedWall.WallState.ON_PATH ||
+                            graph.walls[j][i].down == SolvedWall.WallState.ON_PATH ||
+                            graph.walls[j][i].right == SolvedWall.WallState.ON_PATH ||
+                            graph.walls[j][i].left == SolvedWall.WallState.ON_PATH) {
+                        graph.grid[j][i].isOnPath = true
+                    }
+                }
+            }
+
             generateOuterWalls(graph)
+            graph.solution = solution
             return graph
         }
 
