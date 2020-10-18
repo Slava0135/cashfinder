@@ -253,13 +253,14 @@ class Graph private constructor(val width: Int, val height: Int) {
                     isEnd = grid[col][row].isEnd
                 }
                 newGraph.walls[newX][newY].apply {
-                    this.up = walls[col][row].up
-                    this.down = walls[col][row].down
-                    this.left = walls[col][row].left
-                    this.right = walls[col][row].right
+                    if (!this.up) this.up = walls[col][row].up
+                    if (!this.down) this.down = walls[col][row].down
+                    if (!this.right) this.right = walls[col][row].right
+                    if (!this.left) this.left = walls[col][row].left
                 }
             }
         }
+
         return newGraph
     }
 
