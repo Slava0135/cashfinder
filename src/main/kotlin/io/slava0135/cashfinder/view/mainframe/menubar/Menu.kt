@@ -8,6 +8,7 @@ import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.StageStyle
 import tornadofx.*
+import java.io.File
 
 class Menu: View() {
     override val root = menubar {
@@ -27,7 +28,9 @@ class Menu: View() {
                                     "Select Output File",
                                     arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
                     if (files.isNotEmpty()) {
-                        graph.value.save(files.first())
+                        graph.value.save(
+                                if (files.first().absolutePath.endsWith(".csh")) files.first()
+                                else File(files.first().canonicalPath + ".csh"))
                     }
                 } catch (e: Exception) {
                     error(e.localizedMessage)
@@ -40,19 +43,24 @@ class Menu: View() {
                                     "Select Input File",
                                     arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
                     if (files.isNotEmpty()) {
-                        if (graph.value == null) {
-                            try {
-                                Graph.load(files.first())
-                            } catch (e: Exception) {
-                                error(e.localizedMessage)
-                            }
+                        try {
+                            Graph.load(files.first())
+                        } catch (e: Exception) {
+                            error(e.localizedMessage)
                         }
                     }
                 }
             }
         }
         menu("Edit") {
-            item("Change size")
+            item("Change size").action {
+                try {
+                    if (graph.value == null) throw IllegalStateException("No Graph is found")
+                    EditingMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+                } catch(e: Exception) {
+                    error(e.localizedMessage)
+                }
+            }
         }
         menu("Solve") {
             item("Solve").action {

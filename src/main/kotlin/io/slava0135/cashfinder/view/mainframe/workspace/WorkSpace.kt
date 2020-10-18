@@ -17,8 +17,8 @@ import tornadofx.*
 class Workspace: Fragment() {
 
     init {
-        graph.addListener {
-            _, _, _ -> replaceWith<Workspace>()
+        graph.onChange {
+            replaceWith<Workspace>()
         }
     }
 

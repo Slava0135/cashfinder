@@ -35,7 +35,7 @@ class SolutionTotal(graph: SolvedGraph) : Fragment() {
                             val files =
                                     chooseFile(
                                             "Select Output File",
-                                            arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")), mode = FileChooserMode.Save)
+                                            arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")), mode = FileChooserMode.Save)
                             if (files.isNotEmpty()) {
                                 graph.save(files.first())
                             }

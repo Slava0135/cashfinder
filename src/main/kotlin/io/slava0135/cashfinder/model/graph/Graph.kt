@@ -238,9 +238,12 @@ class Graph private constructor(val width: Int, val height: Int) {
         return result
     }
 
-    fun offset(up: Int = 0, right: Int = 0, down: Int = 0, left: Int = 0): Graph {
-        require(up + down + height > 0 && left + right + width > 0)
-        val newGraph = createEmpty(left + right + width, up + down + height)
+    fun offset(up: Int = 0, right: Int = 0, down: Int = 0, left: Int = 0, allWalls: Boolean = false, random: Boolean = false): Graph {
+
+        if (up + down + height < 1 || left + right + width < 1) throw Exception("Negative size values")
+        if (up + down + height > AppConfig.Graph.sizeLimit || left + right + width > AppConfig.Graph.sizeLimit) throw Exception("Size limit reached")
+
+        val newGraph = createEmpty(left + right + width, up + down + height, allWalls, random)
         for (col in max(0, -left) until min(width, width + right)) {
             for (row in max(0, -up) until min(height, height + down)) {
                 val newX = col + left
@@ -249,7 +252,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                     isStart = grid[col][row].isStart
                     isEnd = grid[col][row].isEnd
                 }
-                newGraph.walls[newX][newY] = Wall().apply {
+                newGraph.walls[newX][newY].apply {
                     this.up = walls[col][row].up
                     this.down = walls[col][row].down
                     this.left = walls[col][row].left
