@@ -1,9 +1,11 @@
 package io.slava0135.cashfinder.view.mainframe.menubar
 
 import io.slava0135.cashfinder.model.graph.Graph
+import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import io.slava0135.cashfinder.view.mainframe.graph
 import io.slava0135.cashfinder.view.mainframe.load
 import io.slava0135.cashfinder.view.mainframe.save
+import io.slava0135.cashfinder.view.solutionframe.SolutionFrame
 import javafx.stage.FileChooser
 import javafx.stage.Modality
 import javafx.stage.StageStyle
@@ -73,7 +75,19 @@ class Menu: View() {
                 }
             }
             separator()
-            item("Import Solution File")
+            item("Import Solution File").action {
+                val files =
+                        chooseFile(
+                                "Select Input File",
+                                arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")))
+                if (files.isNotEmpty()) {
+                    try {
+                        SolvedGraph.Factory.load(files.first())
+                    } catch (e: Exception) {
+                        error(e.localizedMessage)
+                    }
+                }
+            }
         }
         menu("Help") {
             item("About the program")

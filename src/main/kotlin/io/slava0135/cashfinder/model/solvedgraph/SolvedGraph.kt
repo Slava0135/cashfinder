@@ -4,6 +4,7 @@ import io.slava0135.cashfinder.model.Solution
 import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.model.graph.Node
 import io.slava0135.cashfinder.model.graph.Position
+import java.io.File
 
 class SolvedGraph(val width: Int, val height: Int) {
 
@@ -70,6 +71,8 @@ class SolvedGraph(val width: Int, val height: Int) {
 
             return solvedGraph
         }
+
+        fun load(file: File) = createFromLines(file.readLines())
 
         private val rowRegex = Regex("""([+]([-#]+|\s+))+[+]""") // +--+-+###+
         private val colRegex = Regex("""([+]([|#]|\s))+[+]""") // +#+|+#+
@@ -208,7 +211,18 @@ class SolvedGraph(val width: Int, val height: Int) {
 
     }
 
+    fun save(file: File) {
+        file.writeText(toString())
+    }
+
     override fun toString(): String {
+
+        val result = mutableListOf<String>()
+        if (solution.score != null) {
+            result.add("${solution.initial};${solution.score}")
+        } else {
+            result.add("${solution.initial}")
+        }
 
         val spaces = IntArray(width)
         for (y in 0 until height) {
@@ -216,13 +230,6 @@ class SolvedGraph(val width: Int, val height: Int) {
                 val len = grid[x][y].value.toString().length
                 spaces[x] = Integer.max(spaces[x], len)
             }
-        }
-
-        val result = mutableListOf<String>()
-        if (solution.score != null) {
-            result.add("${solution.initial};${solution.score}")
-        } else {
-            result.add("${solution.initial}")
         }
 
         val border = "+" + spaces.joinToString("+") { "-".repeat(it) } + "+"
@@ -263,6 +270,6 @@ class SolvedGraph(val width: Int, val height: Int) {
             result.add(lowerLine.toString())
         }
         result[result.lastIndex] = border
-        return result.joinToString { "\n" }
+        return result.joinToString("\n")
     }
 }

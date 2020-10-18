@@ -13,43 +13,26 @@ class SolutionTotal(graph: SolvedGraph) : Fragment() {
     val solution = graph.solution
 
     override val root = vbox {
-        pane {
-            form {
-                fieldset{
-                    field {
-                        label("Initial money: ${solution.initial}") {
-                            font = AppConfig.font
+        form {
+            fieldset {
+                field("Initial money: ${solution.initial}")
+                if (solution.score != null) {
+                    field("Total money: ${solution.score}")
+                    field("Path length: ${solution.nodes.size}")
+                    button("Save solution").action {
+                        useMaxWidth = true
+                        val files =
+                                chooseFile(
+                                        "Select Output File",
+                                        arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")), mode = FileChooserMode.Save)
+                        if (files.isNotEmpty()) {
+                            graph.save(
+                                    if (files.first().absolutePath.endsWith(".sol")) files.first()
+                                    else File(files.first().canonicalPath + ".sol"))
                         }
                     }
-                    if (solution.score != null) {
-                        field {
-                            label("Total money: ${solution.score}") {
-                                font = AppConfig.font
-                            }
-                        }
-                        field {
-                            label("Path length: ${solution.nodes.size}") {
-                                font = AppConfig.font
-                            }
-                        }
-                        button("Save solution").action {
-                            val files =
-                                    chooseFile(
-                                            "Select Output File",
-                                            arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")), mode = FileChooserMode.Save)
-                            if (files.isNotEmpty()) {
-                                graph.save(
-                                        if (files.first().absolutePath.endsWith(".sol")) files.first()
-                                        else File(files.first().canonicalPath + ".sol"))
-                            }
-                        }
-                    } else {
-                        field {
-                            label("Solution is not found") {
-                                font = AppConfig.font
-                            }
-                        }
-                    }
+                } else {
+                    field("Solution is not found")
                 }
             }
         }
