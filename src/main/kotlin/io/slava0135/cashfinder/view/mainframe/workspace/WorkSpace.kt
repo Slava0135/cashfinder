@@ -128,19 +128,25 @@ class Workspace: Fragment() {
                     when (text) {
                         "S" -> {
                             val node = graph.value.grid[x / 2][y / 2]
+                            if (node.isEnd) {
+                                node.isEnd = false
+                                graph.value.end = null
+                            }
                             node.apply {
                                 value = 0
                                 isStart = true
-                                isEnd = false
                             }
                             graph.value.start = node
                             background = Background(BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY))
                         }
                         "F" -> {
                             val node = graph.value.grid[x / 2][y / 2]
+                            if (node.isStart) {
+                                node.isStart = false
+                                graph.value.start = null
+                            }
                             node.apply {
                                 value = 0
-                                isStart = false
                                 isEnd = true
                             }
                             graph.value.end = node

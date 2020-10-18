@@ -5,7 +5,7 @@ import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.model.graph.Node
 import io.slava0135.cashfinder.model.graph.Position
 
-class SolvedGraph private constructor(val width: Int, val height: Int) {
+class SolvedGraph(val width: Int, val height: Int) {
 
     val grid = Array(width) { Array(height) { SolvedNode(0) } }
     val walls = Array(width) { Array(height) { SolvedWall() } }
@@ -13,8 +13,6 @@ class SolvedGraph private constructor(val width: Int, val height: Int) {
     lateinit var solution: Solution
 
     companion object Factory {
-
-        fun createEmpty(width: Int, height: Int): SolvedGraph = SolvedGraph(width, height)
 
         fun createFromSolution(graph: Graph, solution: Solution): SolvedGraph {
 
@@ -76,12 +74,137 @@ class SolvedGraph private constructor(val width: Int, val height: Int) {
         private val rowRegex = Regex("""([+]([-#]+|\s+))+[+]""") // +--+-+###+
         private val colRegex = Regex("""([+]([|#]|\s))+[+]""") // +#+|+#+
 
-        fun createFromLines(readLines: List<String>): SolvedGraph {
-            TODO()
-        }
-    }
+        fun createFromLines(rawLines: List<String>): SolvedGraph {
 
-    init {
+            require(rawLines.isNotEmpty())
+            val data = rawLines.first().split(" ")
+            //val solution = Solution(emptyList(), data.first().toInt(), data.lastOrNull()?.toInt())
+
+            val lines = rawLines.drop(1)
+
+            require(lines.size > 2 && lines[1].length > 2)
+
+            //checking lines lengths
+            if (lines.any { it.length != lines.first().length })
+                throw IllegalArgumentException("Different lines lengths")
+
+            //checking rows
+            if (lines.first().any { it !in "+-" } || lines.last().any { it !in "+-" })
+                throw IllegalArgumentException("Bad upper/bottom border")
+            for (row in lines.indices) {
+                if (row % 2 == 0) {
+                    if (rowRegex.matches(lines[row]) || lines[row].replace(" ", "-") != lines.first())
+                        throw IllegalArgumentException("Row #$row is wrong")
+                }
+            }
+
+            //reading crosses positions
+            val crosses = mutableSetOf<Int>()
+            for (index in lines[0].indices) {
+                if (lines[0][index] == '+') {
+                    crosses.add(index)
+                }
+            }
+
+            //checking columns
+            fun rotate(index: Int) = lines.map { it[index] }.joinToString("")
+            val firstCol = rotate(0)
+            if (firstCol.any { it !in "+|" } || rotate(lines[0].length - 1).any { it !in "+|" })
+                throw IllegalArgumentException("Bad left/right border")
+            for (col in lines[0].indices) {
+                val line = rotate(col)
+                if (col in crosses) {
+                    if (colRegex.matches(line))
+                        throw IllegalArgumentException("Column #$col is wrong")
+                }
+            }
+
+            var startFound = false
+            var endFound = false
+
+            val len = lines[0].length
+            val graph = SolvedGraph(crosses.size - 1, lines.size / 2)
+            var x = 0
+            //only rows with digits
+            for ((y, row) in (1 until lines.size step 2).withIndex()) {
+
+                val iterator = crosses.drop(1).iterator()
+                var cross = iterator.next()
+
+                val buffer = StringBuilder()
+
+                var col = 1
+                while (col < len) {
+                    if (col == cross) {
+                        //not including most left and right walls
+                        if (col < len - 1) {
+                            when(lines[row][col]) {
+                                '|' -> {
+                                    graph.walls[x + 1][y].left = SolvedWall.WallState.WALL
+                                    graph.walls[x][y].right = SolvedWall.WallState.WALL
+                                }
+                                '#' -> {
+                                    graph.walls[x + 1][y].left = SolvedWall.WallState.ON_PATH
+                                    graph.walls[x][y].right = SolvedWall.WallState.ON_PATH
+                                }
+                            }
+                        }
+
+                        val value = buffer.replace(Regex("""\s"""), "")
+                        when {
+                            value.toIntOrNull() != null -> graph.grid[x][y] = SolvedNode(value.toInt())
+                            value == "S" -> {
+                                if (startFound) throw IllegalArgumentException("Multiple start tiles")
+                                graph.grid[x][y] = SolvedNode(0).apply { isStart = true }
+                                startFound = true
+                            }
+                            value == "F" -> {
+                                if (endFound) throw IllegalArgumentException("Multiple finish tiles")
+                                graph.grid[x][y] = SolvedNode(0).apply { isEnd = true }
+                                endFound = true
+                            }
+                            else -> throw IllegalArgumentException("Invalid tile x:$x y:$y")
+                        }
+                        buffer.clear()
+
+                        if (iterator.hasNext()) {
+                            cross = iterator.next()
+                        } else break
+                        x++
+
+                    } else {
+                        if (buffer.isEmpty()) {
+                            graph.walls[x][y].up = when (lines[row - 1][col]) {
+                                '-' -> SolvedWall.WallState.WALL
+                                '#' -> SolvedWall.WallState.ON_PATH
+                                else -> SolvedWall.WallState.NO_WALL
+                            }
+                            graph.walls[x][y].down = when (lines[row + 1][col]) {
+                                '-' -> SolvedWall.WallState.WALL
+                                '#' -> SolvedWall.WallState.ON_PATH
+                                else -> SolvedWall.WallState.NO_WALL
+                            }
+                        }
+                        buffer.append(lines[row][col])
+                    }
+                    col++
+                }
+                x = 0
+            }
+            generateOuterWalls(graph)
+            return graph
+        }
+
+        private fun generateOuterWalls(graph: SolvedGraph) {
+            for (i in 0 until graph.height) {
+                graph.walls[0][i].left = SolvedWall.WallState.WALL
+                graph.walls[graph.width - 1][i].right = SolvedWall.WallState.WALL
+            }
+            for (i in 0 until graph.width) {
+                graph.walls[i][0].up = SolvedWall.WallState.WALL
+                graph.walls[i][graph.height - 1].down = SolvedWall.WallState.WALL
+            }
+        }
 
     }
 
@@ -99,7 +222,7 @@ class SolvedGraph private constructor(val width: Int, val height: Int) {
         if (solution.score != null) {
             result.add("${solution.initial};${solution.score}")
         } else {
-            result.add("No path")
+            result.add("${solution.initial}")
         }
 
         val border = "+" + spaces.joinToString("+") { "-".repeat(it) } + "+"

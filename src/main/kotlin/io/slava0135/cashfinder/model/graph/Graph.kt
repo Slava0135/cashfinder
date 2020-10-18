@@ -39,6 +39,7 @@ class Graph private constructor(val width: Int, val height: Int) {
         }
 
         fun createFromLines(lines: List<String>): Graph {
+            require(lines.size > 2 && lines[0].length > 2)
             //checking lines lengths
             if (lines.any { it.length != lines.first().length })
                 throw IllegalArgumentException("Different lines lengths")
@@ -240,8 +241,8 @@ class Graph private constructor(val width: Int, val height: Int) {
 
     fun offset(up: Int = 0, right: Int = 0, down: Int = 0, left: Int = 0, allWalls: Boolean = false, random: Boolean = false): Graph {
 
-        if (up + down + height < 1 || left + right + width < 1) throw Exception("Negative size values")
-        if (up + down + height > AppConfig.Graph.sizeLimit || left + right + width > AppConfig.Graph.sizeLimit) throw Exception("Size limit reached")
+        if (up + down + height < 1 || left + right + width < 1) throw IllegalStateException("Negative size values")
+        if (up + down + height > AppConfig.Graph.sizeLimit || left + right + width > AppConfig.Graph.sizeLimit) throw IllegalStateException("Size limit reached")
 
         val newGraph = createEmpty(left + right + width, up + down + height, allWalls, random)
         for (col in max(0, -left) until min(width, width + right)) {
