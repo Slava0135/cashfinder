@@ -16,12 +16,6 @@ import tornadofx.*
 
 class Workspace: Fragment() {
 
-    init {
-        graph.onChange {
-            replaceWith<Workspace>()
-        }
-    }
-
     override val root = scrollpane {
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER

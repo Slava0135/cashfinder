@@ -7,6 +7,13 @@ import tornadofx.*
 class Cashfinder: App(MainView::class)
 
 class MainView: View("Cashfinder") {
+
+    init {
+        graph.onChange {
+            root.center = Workspace().root
+        }
+    }
+
     override val root = borderpane {
         top<Menu>()
         center<Workspace>()

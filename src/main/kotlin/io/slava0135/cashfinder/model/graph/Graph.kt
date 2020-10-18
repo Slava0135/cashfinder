@@ -252,6 +252,18 @@ class Graph private constructor(val width: Int, val height: Int) {
                     isStart = grid[col][row].isStart
                     isEnd = grid[col][row].isEnd
                 }
+                if (walls[col][row].up && row == 0 && newY > 0) {
+                    newGraph.walls[newX][newY - 1].down = true
+                }
+                if (walls[col][row].down && row == height - 1 && newY + 1 < newGraph.height) {
+                    newGraph.walls[newX][newY + 1].up = true
+                }
+                if (walls[col][row].left && col == 0 && newX > 0) {
+                    newGraph.walls[newX - 1][newY].right = true
+                }
+                if (walls[col][row].right && col == width - 1 && newX + 1 < newGraph.width) {
+                    newGraph.walls[newX + 1][newY].left = true
+                }
                 newGraph.walls[newX][newY].apply {
                     if (!this.up) this.up = walls[col][row].up
                     if (!this.down) this.down = walls[col][row].down
