@@ -83,7 +83,7 @@ class Menu: View() {
                                 arrayOf(FileChooser.ExtensionFilter("Cash File (*.sol)", "*.sol")))
                 if (files.isNotEmpty()) {
                     try {
-                        SolutionFrame(load(files.first())).openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+                        SolutionFrame(load(files.first())).openWindow(StageStyle.UTILITY, Modality.NONE, true, block = false, resizable = true)
                     } catch (e: Exception) {
                         error(e.localizedMessage)
                     }
@@ -91,7 +91,9 @@ class Menu: View() {
             }
         }
         menu("Help") {
-            item("About the program")
+            item("About the program").action {
+                About().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+            }
         }
     }
 }

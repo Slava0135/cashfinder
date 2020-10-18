@@ -80,8 +80,8 @@ class SolvedGraph(val width: Int, val height: Int) {
         fun createFromLines(rawLines: List<String>): SolvedGraph {
 
             require(rawLines.isNotEmpty())
+
             val data = rawLines.first().split(";")
-            val solution = Solution(emptyList(), data.first().toInt(), data.lastOrNull()?.toInt())
 
             val lines = rawLines.drop(1)
 
@@ -195,6 +195,7 @@ class SolvedGraph(val width: Int, val height: Int) {
                 x = 0
             }
 
+            var count = 0
             for (i in 0 until graph.width) {
                 for (j in 0 until graph.height) {
                     if (graph.walls[j][i].up == SolvedWall.WallState.ON_PATH ||
@@ -202,9 +203,11 @@ class SolvedGraph(val width: Int, val height: Int) {
                             graph.walls[j][i].right == SolvedWall.WallState.ON_PATH ||
                             graph.walls[j][i].left == SolvedWall.WallState.ON_PATH) {
                         graph.grid[j][i].isOnPath = true
+                        count++
                     }
                 }
             }
+            val solution = Solution(emptyList(), data.first().toInt(), data.lastOrNull()?.toInt(), count)
 
             generateOuterWalls(graph)
             graph.solution = solution

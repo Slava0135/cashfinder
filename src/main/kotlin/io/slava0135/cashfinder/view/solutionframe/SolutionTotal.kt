@@ -1,9 +1,6 @@
 package io.slava0135.cashfinder.view.solutionframe
 
-import io.slava0135.cashfinder.AppConfig
-import io.slava0135.cashfinder.model.Solution
 import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
-import io.slava0135.cashfinder.view.mainframe.save
 import javafx.stage.FileChooser
 import tornadofx.*
 import java.io.File
@@ -18,7 +15,8 @@ class SolutionTotal(graph: SolvedGraph) : Fragment() {
                 field("Initial money: ${solution.initial}")
                 if (solution.score != null) {
                     field("Total money: ${solution.score}")
-                    field("Path length: ${solution.nodes.size}")
+                    field("Path length: ${solution.length}")
+                    separator()
                     button("Save solution").action {
                         useMaxWidth = true
                         val files =
