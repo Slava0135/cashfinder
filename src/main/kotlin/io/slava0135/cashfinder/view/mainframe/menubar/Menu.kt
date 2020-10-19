@@ -1,11 +1,8 @@
 package io.slava0135.cashfinder.view.mainframe.menubar
 
-import io.slava0135.cashfinder.model.graph.Graph
-import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph.Factory.load
 import io.slava0135.cashfinder.view.mainframe.graph
-import io.slava0135.cashfinder.view.mainframe.load
-import io.slava0135.cashfinder.view.mainframe.save
+import io.slava0135.cashfinder.view.mainframe.loadGraph
 import io.slava0135.cashfinder.view.solutionframe.SolutionFrame
 import javafx.stage.FileChooser
 import javafx.stage.Modality
@@ -47,7 +44,7 @@ class Menu: View() {
                                     arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
                     if (files.isNotEmpty()) {
                         try {
-                            Graph.load(files.first())
+                            loadGraph(files.first())
                         } catch (e: Exception) {
                             error(e.localizedMessage)
                         }

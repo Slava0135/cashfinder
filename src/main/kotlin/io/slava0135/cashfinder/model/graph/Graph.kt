@@ -40,6 +40,8 @@ class Graph private constructor(val width: Int, val height: Int) {
             return graph
         }
 
+        fun load(file: File): Graph = createFromLines(file.readLines())
+
         fun createFromLines(lines: List<String>): Graph {
             require(lines.size > 2 && lines[0].length > 2)
             //checking lines lengths
@@ -162,6 +164,11 @@ class Graph private constructor(val width: Int, val height: Int) {
                 graph.walls[i][graph.height - 1].down = true
             }
         }
+    }
+
+    fun save(file: File) {
+        validate()
+        file.writeText(toString())
     }
 
     //build dependencies in grid using walls
