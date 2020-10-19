@@ -19,7 +19,7 @@ class About : Fragment() {
         label("If you enter ones with a positive value you will gain money. And if you enter ones with a negative value - you loose them.")
         label("The problem is how to get as many coins as possible while starting and finishing within a certain rooms and not waste all money.")
         separator()
-        label("You can create mazes in both text editor and this program's workspace and then solve.")
+        label("You can create mazes in both text editor and this program's workspace.")
         separator()
         hbox {
             prefHeight = 300.0

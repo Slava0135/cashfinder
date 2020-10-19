@@ -4,7 +4,7 @@ import io.slava0135.cashfinder.model.graph.Graph
 import io.slava0135.cashfinder.model.graph.Node
 import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 
-class Solution(val nodes: List<Node>, val initial: Int, val score: Int?, val length: Int = 0)
+class Solution(val nodes: List<Node>, val initial: Int, val score: Int?)
 
 enum class Solver(val type: String, private val function: (Graph, Int) -> SolvedGraph) {
     BRUTEFORCE("Precise", ::bruteforce);
@@ -40,5 +40,5 @@ private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
     next(graph.start!!, initial)
     return if (best == null) {
         SolvedGraph.createFromSolution(graph, Solution(emptyList(), initial, null))
-    } else SolvedGraph.createFromSolution(graph, Solution(best!!.first.toList(), initial, best!!.second, best!!.first.size))
+    } else SolvedGraph.createFromSolution(graph, Solution(best!!.first.toList(), initial, best!!.second))
 }

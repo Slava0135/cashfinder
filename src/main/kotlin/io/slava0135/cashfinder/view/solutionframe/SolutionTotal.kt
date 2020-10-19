@@ -7,17 +7,15 @@ import java.io.File
 
 class SolutionTotal(graph: SolvedGraph) : Fragment() {
 
-    val solution = graph.solution
-
     override val root = vbox {
         form {
             fieldset {
-                field("Initial money: ${solution.initial}")
-                if (solution.score != null) {
-                    field("Total money: ${solution.score}")
-                    field("Path length: ${solution.length}")
+                field("Initial money: ${graph.initial}")
+                if (graph.score != null) {
+                    field("Total money: ${graph.score}")
+                    field("Path length: ${graph.length}")
                     separator()
-                    button("Save solution").action {
+                    button("Save the Solution").action {
                         useMaxWidth = true
                         val files =
                                 chooseFile(

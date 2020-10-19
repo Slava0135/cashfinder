@@ -6,18 +6,17 @@ import io.slava0135.cashfinder.model.graph.Node
 import io.slava0135.cashfinder.model.graph.Position
 import java.io.File
 
-class SolvedGraph(val width: Int, val height: Int) {
+class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: Int?, val length: Int?) {
 
     val grid = Array(width) { Array(height) { SolvedNode(0) } }
     val walls = Array(width) { Array(height) { SolvedWall() } }
-
-    lateinit var solution: Solution
 
     companion object Factory {
 
         fun createFromSolution(graph: Graph, solution: Solution): SolvedGraph {
 
-            val solvedGraph = SolvedGraph(graph.width, graph.height).apply { this.solution = solution }
+            val length = if (solution.score != null) solution.nodes.size else null
+            val solvedGraph = SolvedGraph(graph.width, graph.height, solution.initial, solution.score, length)
 
             val walls = solvedGraph.walls
             val grid = solvedGraph.grid
@@ -82,7 +81,6 @@ class SolvedGraph(val width: Int, val height: Int) {
             require(rawLines.isNotEmpty())
 
             val data = rawLines.first().split(";")
-
             val lines = rawLines.drop(1)
 
             require(lines.size > 2 && lines[1].length > 2)
@@ -125,8 +123,15 @@ class SolvedGraph(val width: Int, val height: Int) {
             var startFound = false
             var endFound = false
 
+            val graph = SolvedGraph(
+                    crosses.size - 1,
+                    lines.size / 2,
+                    data[0].toInt(),
+                    data[1].toInt(),
+                    data[2].toInt()
+            )
+
             val len = lines[0].length
-            val graph = SolvedGraph(crosses.size - 1, lines.size / 2)
             var x = 0
             //only rows with digits
             for ((y, row) in (1 until lines.size step 2).withIndex()) {
@@ -195,7 +200,6 @@ class SolvedGraph(val width: Int, val height: Int) {
                 x = 0
             }
 
-            var count = 0
             for (i in 0 until graph.width) {
                 for (j in 0 until graph.height) {
                     if (graph.walls[j][i].up == SolvedWall.WallState.ON_PATH ||
@@ -203,14 +207,11 @@ class SolvedGraph(val width: Int, val height: Int) {
                             graph.walls[j][i].right == SolvedWall.WallState.ON_PATH ||
                             graph.walls[j][i].left == SolvedWall.WallState.ON_PATH) {
                         graph.grid[j][i].isOnPath = true
-                        count++
                     }
                 }
             }
-            val solution = Solution(emptyList(), data.first().toInt(), data.lastOrNull()?.toInt(), count)
 
             generateOuterWalls(graph)
-            graph.solution = solution
             return graph
         }
 
@@ -233,12 +234,12 @@ class SolvedGraph(val width: Int, val height: Int) {
 
     override fun toString(): String {
 
-        val result = mutableListOf<String>()
-        if (solution.score != null) {
-            result.add("${solution.initial};${solution.score}")
-        } else {
-            result.add("${solution.initial}")
+        var info = initial.toString()
+        score?.let {
+            info += ";${score};${length}"
         }
+
+        val result = mutableListOf(info)
 
         val spaces = IntArray(width)
         for (y in 0 until height) {
@@ -286,6 +287,7 @@ class SolvedGraph(val width: Int, val height: Int) {
             result.add(lowerLine.toString())
         }
         result[result.lastIndex] = border
+
         return result.joinToString("\n")
     }
 }
