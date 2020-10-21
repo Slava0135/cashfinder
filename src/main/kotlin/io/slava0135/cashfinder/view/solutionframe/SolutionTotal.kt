@@ -1,5 +1,6 @@
 package io.slava0135.cashfinder.view.solutionframe
 
+import io.slava0135.cashfinder.AppConfig
 import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import javafx.stage.FileChooser
 import tornadofx.*

@@ -15,7 +15,6 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
     override val root = scrollpane {
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-        setPrefSize(AppConfig.Window.prefHeight.toDouble(), AppConfig.Window.prefWidth.toDouble())
         content = gridpane {
             isPannable = true
             for (y in 0..graph.height * 2) {
