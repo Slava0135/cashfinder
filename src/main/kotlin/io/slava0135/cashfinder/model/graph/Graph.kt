@@ -215,21 +215,21 @@ class Graph private constructor(val width: Int, val height: Int) {
             }
         }
 
-        for (x in 0 until width step(2)) {
+        for (x in 0 until width) {
             for (y in (x % 2) until height step(2)) {
-                if (x > 0 && random.nextBoolean()) {
+                if (x > 0 && random.nextInt(100) < 20) {
                     walls[x - 1][y].right = false
                     walls[x][y].left = false
                 }
-                if (y > 0 && random.nextBoolean()) {
+                if (y > 0 && random.nextInt(100) < 20) {
                     walls[x][y - 1].down = false
                     walls[x][y].up = false
                 }
-                if (x < width - 1 && random.nextBoolean()) {
+                if (x < width - 1 && random.nextInt(100) < 20) {
                     walls[x + 1][y].left = false
                     walls[x][y].right = false
                 }
-                if (y < height - 1 && random.nextBoolean()) {
+                if (y < height - 1 && random.nextInt(100) < 20) {
                     walls[x][y + 1].up = false
                     walls[x][y].down = false
                 }
