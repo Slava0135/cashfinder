@@ -10,19 +10,40 @@ class CreationMenu: Fragment("New") {
 
     var graphHeight: TextField by singleAssign()
     var graphWidth: TextField by singleAssign()
-    var allWalls = true
+
+    private enum class Generator(val type: String) {
+        EMPTY("No walls"),
+        ALL("All walls"),
+        RANDOM("Randomized");
+
+        override fun toString() = type
+    }
+
+    private val comboBox = combobox<Generator> {
+        items.setAll(*Generator.values())
+        setOnAction {
+            gotGenerator = selectedItem != null
+        }
+    }
+
     var random = false
 
+    var gotGenerator = false
+        set(value) {
+            gotEverything.value = value && gotHeight && gotWidth
+            field = value
+        }
     var gotWidth = false
         set(value) {
-            gotEverything.value = value && gotHeight
+            gotEverything.value = value && gotHeight && gotGenerator
             field = value
         }
     var gotHeight = false
         set(value) {
-            gotEverything.value = value && gotWidth
+            gotEverything.value = value && gotWidth && gotGenerator
             field = value
         }
+
     var gotEverything = booleanProperty()
 
     override val root = hbox {
@@ -54,20 +75,15 @@ class CreationMenu: Fragment("New") {
                         graphHeight = this
                     }
                 }
-                field("Place walls everywhere")  {
-                    checkbox {
-                        isSelected = true
-                        action {
-                            allWalls = isSelected
-                        }
-                    }
-                }
                 field("Assign random values")  {
                     checkbox {
                         action {
                             random = isSelected
                         }
                     }
+                }
+                field("Walls:")  {
+                    add(comboBox)
                 }
                 button("Create!") {
                     useMaxWidth = true
@@ -77,7 +93,13 @@ class CreationMenu: Fragment("New") {
                             val width = graphWidth.text.toInt()
                             val height = graphHeight.text.toInt()
                             if (width > 0 && height > 0) {
-                                graph.value = Graph.createEmpty(width, height, allWalls, random)
+                                val g = Graph.createEmpty(width, height, random)
+                                when (comboBox.selectedItem!!) {
+                                    Generator.ALL -> g.generateAllWalls()
+                                    Generator.RANDOM -> g.generateRandomWalls()
+                                    else -> {}
+                                }
+                                graph.value = g
                                 close()
                             }
                         }

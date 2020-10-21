@@ -16,7 +16,7 @@ class SolutionMenu: Fragment("Find a Solution") {
             isSelected.value = selectedItem != null
         }
     }
-    var isSelected = booleanProperty()
+    val isSelected = booleanProperty()
     var initial: TextField by singleAssign()
 
     override val root = hbox {

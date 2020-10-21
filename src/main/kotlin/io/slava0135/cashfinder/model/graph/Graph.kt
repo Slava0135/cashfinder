@@ -1,13 +1,15 @@
 package io.slava0135.cashfinder.model.graph
 import io.slava0135.cashfinder.AppConfig
-import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import java.io.File
 import java.lang.Integer.max
 import java.lang.Integer.min
 import java.util.*
 
 class Graph private constructor(val width: Int, val height: Int) {
-    val grid = Array(width) { Array(height) { Node(0, Position(-1, -1)) } }
+
+    private val EMPTY = Node(0, Position(-1, -1))
+
+    val grid = Array(width) { Array(height) { EMPTY } }
     val walls = Array(width) { Array(height) { Wall() } }
 
     var start: Node? = null
@@ -17,11 +19,10 @@ class Graph private constructor(val width: Int, val height: Int) {
         private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
         private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +|+|+|+
 
-        fun createEmpty(width: Int, height: Int, allWalls: Boolean = false, random: Boolean = false): Graph {
+        fun createEmpty(width: Int, height: Int, random: Boolean = false): Graph {
             require(width > 0 && height > 0)
             val graph = Graph(width, height)
-            if (allWalls) generateAllWalls(graph)
-            else generateOuterWalls(graph)
+            generateOuterWalls(graph)
             if (random) {
                 val generator = Random()
                 for (x in graph.grid.indices) {
@@ -141,19 +142,6 @@ class Graph private constructor(val width: Int, val height: Int) {
             return graph
         }
 
-        private fun generateAllWalls(graph: Graph) {
-            for (x in graph.grid.indices) {
-                for (y in graph.grid[0].indices) {
-                    graph.walls[x][y].apply {
-                        up = true
-                        down = true
-                        left = true
-                        right = true
-                    }
-                }
-            }
-        }
-
         private fun generateOuterWalls(graph: Graph) {
             for (i in 0 until graph.height) {
                 graph.walls[0][i].left = true
@@ -163,6 +151,69 @@ class Graph private constructor(val width: Int, val height: Int) {
                 graph.walls[i][0].up = true
                 graph.walls[i][graph.height - 1].down = true
             }
+        }
+    }
+
+    fun generateAllWalls() {
+        for (x in grid.indices) {
+            for (y in grid[0].indices) {
+                walls[x][y].apply {
+                    up = true
+                    down = true
+                    left = true
+                    right = true
+                }
+            }
+        }
+    }
+
+    fun generateRandomWalls() {
+        generateAllWalls()
+        val random = Random()
+        val (initX, initY) = Pair(random.nextInt(width), random.nextInt(height))
+        val queue = ArrayDeque<Position>()
+        queue.add(Position(initX, initY))
+        val isVisited = Array(width) { BooleanArray(height) }
+        isVisited[initX][initY] = true
+        while (queue.isNotEmpty()) {
+
+            val current = queue.first
+            val (x, y) = current
+
+            fun tryPath(unblock: Boolean): Boolean {
+                if (x > 0 && !isVisited[x - 1][y] && (unblock || random.nextBoolean())) {
+                    walls[x - 1][y].right = false
+                    walls[x][y].left = false
+                    isVisited[x - 1][y] = true
+                    queue.addFirst(Position(x - 1, y))
+                }
+                else if (y > 0 && !isVisited[x][y - 1] && (unblock || random.nextBoolean())) {
+                    walls[x][y - 1].down = false
+                    walls[x][y].up = false
+                    isVisited[x][y - 1] = true
+                    queue.addFirst(Position(x, y - 1))
+                }
+                else if (x < width - 1 && !isVisited[x + 1][y] && (unblock || random.nextBoolean())) {
+                    walls[x + 1][y].left = false
+                    walls[x][y].right = false
+                    isVisited[x + 1][y] = true
+                    queue.addFirst(Position(x + 1, y))
+                }
+                else if (y < height - 1 && !isVisited[x][y + 1] && (unblock || random.nextBoolean())) {
+                    walls[x][y + 1].up = false
+                    walls[x][y].down = false
+                    isVisited[x][y + 1] = true
+                    queue.addFirst(Position(x, y + 1))
+                } else return true
+                return false
+            }
+
+            if (tryPath(false)) {
+                if (tryPath(true)) {
+                    queue.removeFirst()
+                }
+            }
+
         }
     }
 
@@ -253,7 +304,9 @@ class Graph private constructor(val width: Int, val height: Int) {
         if (up + down + height < 1 || left + right + width < 1) throw IllegalStateException("Negative size values")
         if (up + down + height > AppConfig.Graph.sizeLimit || left + right + width > AppConfig.Graph.sizeLimit) throw IllegalStateException("Size limit reached")
 
-        val newGraph = createEmpty(left + right + width, up + down + height, allWalls, random)
+        val newGraph = createEmpty(left + right + width, up + down + height, random)
+        if (allWalls) newGraph.generateAllWalls()
+
         for (col in max(0, -left) until min(width, width + right)) {
             for (row in max(0, -up) until min(height, height + down)) {
                 val newX = col + left
