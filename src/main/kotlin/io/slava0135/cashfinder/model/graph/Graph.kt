@@ -155,8 +155,8 @@ class Graph private constructor(val width: Int, val height: Int) {
     }
 
     fun generateAllWalls() {
-        for (x in grid.indices) {
-            for (y in grid[0].indices) {
+        for (x in walls.indices) {
+            for (y in walls[0].indices) {
                 walls[x][y].apply {
                     up = true
                     down = true
@@ -215,6 +215,19 @@ class Graph private constructor(val width: Int, val height: Int) {
             }
 
         }
+
+        for (x in walls.indices) {
+            for (y in walls[0].indices) {
+                walls[x][y].apply {
+                    up = if (random.nextInt(100) > 75) false else up
+                    down = if (random.nextInt(100) > 75) false else down
+                    left = if (random.nextInt(100) > 75) false else left
+                    right = if (random.nextInt(100) > 75) false else right
+                }
+            }
+        }
+
+        generateOuterWalls(this)
     }
 
     fun save(file: File) {
