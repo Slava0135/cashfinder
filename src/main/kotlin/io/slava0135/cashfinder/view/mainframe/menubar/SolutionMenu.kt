@@ -44,7 +44,7 @@ class SolutionMenu: Fragment("Find a Solution") {
                             initial.text = "0"
                         }
                         SolutionFrame(comboBox.selectedItem!!.solve(graph.value, initial.text.toInt()))
-                                .openWindow(StageStyle.UTILITY, Modality.NONE, true, block = false, resizable = true)
+                                .openWindow(StageStyle.UTILITY, Modality.NONE, false, block = false, resizable = true)
                         close()
                     }
                 }

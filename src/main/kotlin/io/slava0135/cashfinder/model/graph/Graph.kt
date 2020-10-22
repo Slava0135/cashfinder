@@ -22,7 +22,7 @@ class Graph private constructor(val width: Int, val height: Int) {
         fun createEmpty(width: Int, height: Int, random: Boolean = false): Graph {
             require(width > 0 && height > 0)
             val graph = Graph(width, height)
-            generateOuterWalls(graph)
+            graph.generateOuterWalls()
             if (random) {
                 val generator = Random()
                 for (x in graph.grid.indices) {
@@ -138,19 +138,19 @@ class Graph private constructor(val width: Int, val height: Int) {
                 x = 0
             }
             graph.validate()
-            generateOuterWalls(graph)
+            graph.generateOuterWalls()
             return graph
         }
+    }
 
-        private fun generateOuterWalls(graph: Graph) {
-            for (i in 0 until graph.height) {
-                graph.walls[0][i].left = true
-                graph.walls[graph.width - 1][i].right = true
-            }
-            for (i in 0 until graph.width) {
-                graph.walls[i][0].up = true
-                graph.walls[i][graph.height - 1].down = true
-            }
+    private fun generateOuterWalls() {
+        for (i in 0 until height) {
+            walls[0][i].left = true
+            walls[width - 1][i].right = true
+        }
+        for (i in 0 until width) {
+            walls[i][0].up = true
+            walls[i][height - 1].down = true
         }
     }
 
@@ -235,8 +235,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                 }
             }
         }
-
-        generateOuterWalls(this)
+        generateOuterWalls()
     }
 
     fun save(file: File) {
