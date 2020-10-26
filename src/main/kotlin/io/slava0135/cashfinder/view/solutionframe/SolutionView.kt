@@ -12,27 +12,34 @@ import javafx.scene.paint.Color
 import tornadofx.*
 
 class SolutionView(private val graph: SolvedGraph) : Fragment() {
+
     override val root = scrollpane {
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         content = gridpane {
             isPannable = true
             for (y in 0..graph.height * 2) {
-                row {
-                    for (x in 0..graph.width * 2) {
-                        when {
-                            y % 2 == 0 && x % 2 == 0 -> {
-                                rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
-                            }
-                            y % 2 == 0 -> {
-                                hWall(this, x, y)
-                            }
-                            x % 2 == 0 -> {
-                                vWall(this, x, y)
-                            }
-                            else -> {
-                                tile(this, x, y)
-                            }
+                newRow(this, y)
+            }
+        }
+    }
+
+    private fun newRow(pane: GridPane, y: Int) {
+        pane.apply {
+            row {
+                for (x in 0..graph.width * 2) {
+                    when {
+                        y % 2 == 0 && x % 2 == 0 -> {
+                            rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
+                        }
+                        y % 2 == 0 -> {
+                            hWall(this, x, y)
+                        }
+                        x % 2 == 0 -> {
+                            vWall(this, x, y)
+                        }
+                        else -> {
+                            tile(this, x, y)
                         }
                     }
                 }

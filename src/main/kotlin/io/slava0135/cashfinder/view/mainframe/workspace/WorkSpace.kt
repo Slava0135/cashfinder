@@ -5,10 +5,7 @@ import io.slava0135.cashfinder.view.mainframe.graph
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.ScrollPane
-import javafx.scene.layout.Background
-import javafx.scene.layout.BackgroundFill
-import javafx.scene.layout.CornerRadii
-import javafx.scene.layout.Pane
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
@@ -24,22 +21,28 @@ class Workspace: Fragment() {
             isPannable = true
             if (graph.value != null) {
                 for (y in 0..graph.value.grid[0].size * 2) {
-                    row {
-                        for (x in 0..graph.value.grid.size * 2) {
-                            when {
-                                y % 2 == 0 && x % 2 == 0 -> {
-                                    rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
-                                }
-                                y % 2 == 0 -> {
-                                    hWall(this, x, y)
-                                }
-                                x % 2 == 0 -> {
-                                    vWall(this, x, y)
-                                }
-                                else -> {
-                                    tile(this, x, y)
-                                }
-                            }
+                    newRow(this, y)
+                }
+            }
+        }
+    }
+
+    private fun newRow(pane: GridPane, y: Int) {
+        pane.apply {
+            row {
+                for (x in 0..graph.value.grid.size * 2) {
+                    when {
+                        y % 2 == 0 && x % 2 == 0 -> {
+                            rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
+                        }
+                        y % 2 == 0 -> {
+                            hWall(this, x, y)
+                        }
+                        x % 2 == 0 -> {
+                            vWall(this, x, y)
+                        }
+                        else -> {
+                            tile(this, x, y)
                         }
                     }
                 }
