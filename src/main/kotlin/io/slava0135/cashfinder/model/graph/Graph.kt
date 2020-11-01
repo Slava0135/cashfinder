@@ -16,6 +16,7 @@ class Graph private constructor(val width: Int, val height: Int) {
     var end: Node? = null
 
     companion object Factory {
+
         private val rowRegex = Regex("""([+](-+|\s+))+[+]""") // +--+-+---+
         private val colRegex = Regex("""([+]([|]|\s))+[+]""") // +|+|+|+
 
@@ -43,7 +44,8 @@ class Graph private constructor(val width: Int, val height: Int) {
 
         fun load(file: File): Graph = createFromLines(file.readLines())
 
-        fun createFromLines(lines: List<String>): Graph {
+        private fun createFromLines(lines: List<String>): Graph {
+
             require(lines.size > 2 && lines[0].length > 2)
             //checking lines lengths
             if (lines.any { it.length != lines.first().length })
@@ -121,6 +123,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                         if (iterator.hasNext()) {
                             cross = iterator.next()
                         } else break
+
                         x++
                     } else {
                         if (buffer.isEmpty()) {
@@ -168,13 +171,18 @@ class Graph private constructor(val width: Int, val height: Int) {
     }
 
     fun generateRandomWalls() {
+
         generateAllWalls()
+
         val random = Random()
+
         val (initX, initY) = Pair(random.nextInt(width), random.nextInt(height))
         val queue = ArrayDeque<Position>()
         queue.add(Position(initX, initY))
+
         val isVisited = Array(width) { BooleanArray(height) }
         isVisited[initX][initY] = true
+
         while (queue.isNotEmpty()) {
 
             val current = queue.first
@@ -235,6 +243,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                 }
             }
         }
+
         generateOuterWalls()
     }
 

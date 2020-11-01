@@ -16,12 +16,14 @@ class SolutionMenu: Fragment("Find a Solution") {
             isSelected.value = selectedItem != null
         }
     }
+
     val isSelected = booleanProperty()
     var initial: TextField by singleAssign()
 
     override val root = hbox {
         form {
             fieldset("Solve the Graph") {
+
                 field("Initial money") {
                     textfield {
                         filterInput {
@@ -33,9 +35,11 @@ class SolutionMenu: Fragment("Find a Solution") {
                         initial = this
                     }
                 }
+
                 field("Choose the algorithm") {
                     add(comboBox)
                 }
+
                 button("Solve!") {
                     useMaxWidth = true
                     enableWhen(isSelected)

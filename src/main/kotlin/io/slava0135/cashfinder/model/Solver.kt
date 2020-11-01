@@ -18,9 +18,12 @@ enum class Solver(val type: String, private val function: (Graph, Int) -> Solved
 }
 
 private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
+
     var best: Pair<List<Node>, Int>? = null
+
     val path = LinkedHashSet<Node>()
     path.add(graph.start!!)
+
     fun next(node: Node, value: Int) {
         if (node.isEnd) {
             if (best == null || best!!.second < value || (best!!.second == value && best!!.first.size > path.size)) {
@@ -37,8 +40,12 @@ private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
             }
         }
     }
+
     next(graph.start!!, initial)
+
     return if (best == null) {
         SolvedGraph.createFromSolution(graph, Solution(emptyList(), initial, null))
-    } else SolvedGraph.createFromSolution(graph, Solution(best!!.first.toList(), initial, best!!.second))
+    } else {
+        SolvedGraph.createFromSolution(graph, Solution(best!!.first.toList(), initial, best!!.second))
+    }
 }

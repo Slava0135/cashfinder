@@ -3,7 +3,9 @@ package io.slava0135.cashfinder.model.graph
 data class Position(val x: Int, val y: Int)
 
 class Node(var value: Int, val position: Position) {
+
     val others = mutableListOf<Node>()
+
     var isEnd = false
     var isStart = false
 

@@ -14,9 +14,11 @@ import tornadofx.*
 class Workspace: Fragment() {
 
     override val root = scrollpane {
+
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         setPrefSize(AppConfig.Window.prefWidth.toDouble(), AppConfig.Window.prefHeight.toDouble())
+
         content = gridpane {
             isPannable = true
             if (graph.value != null) {
@@ -53,7 +55,9 @@ class Workspace: Fragment() {
     private fun hWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
             rectangle(width = AppConfig.GridPane.baseLength, height = AppConfig.GridPane.baseWidth).apply {
+
                 fill = if (y == 0 || y == graph.value.grid[0].size * 2 || graph.value.walls[x / 2][y / 2].up) Color.BLACK else Color.WHITE
+
                 setOnMouseClicked {
                     if (y != 0 && y != graph.value.grid[0].size * 2) {
                         if (fill == Color.BLACK) {
@@ -74,7 +78,9 @@ class Workspace: Fragment() {
     private fun vWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
             rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseLength).apply {
+
                 fill = if (x == 0 || x == graph.value.grid.size * 2 || graph.value.walls[x / 2][y / 2].left) Color.BLACK else Color.WHITE
+
                 setOnMouseClicked {
                     if (x != 0 && x != graph.value.grid.size * 2) {
                         if (fill == Color.BLACK) {

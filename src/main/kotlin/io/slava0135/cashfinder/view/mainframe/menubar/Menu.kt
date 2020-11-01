@@ -12,13 +12,17 @@ import java.io.File
 
 class Menu: View() {
     override val root = menubar {
+
         menu("File") {
+
             item("New").action {
                 confirm("Are you sure?", "Current grid will be deleted!") {
                     CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                 }
             }
+
             separator()
+
             item("Save").action {
                 try {
                     if (graph.value == null) throw IllegalStateException("No Graph is found")
@@ -36,10 +40,10 @@ class Menu: View() {
                     error(e.localizedMessage)
                 }
             }
+
             item("Load").action {
                 confirm("Are you sure?", "Current grid will be deleted!") {
-                    val files =
-                            chooseFile(
+                    val files = chooseFile(
                                     "Select Input File",
                                     arrayOf(FileChooser.ExtensionFilter("Cash File (*.csh)", "*.csh")))
                     if (files.isNotEmpty()) {
@@ -52,6 +56,7 @@ class Menu: View() {
                 }
             }
         }
+
         menu("Edit") {
             item("Change size").action {
                 try {
@@ -62,6 +67,7 @@ class Menu: View() {
                 }
             }
         }
+
         menu("Solve") {
             item("Solve").action {
                 try {
@@ -72,7 +78,9 @@ class Menu: View() {
                     error(e.localizedMessage)
                 }
             }
+
             separator()
+
             item("Import Solution File").action {
                 val files =
                         chooseFile(
@@ -87,6 +95,7 @@ class Menu: View() {
                 }
             }
         }
+
         menu("Help") {
             item("About the program").action {
                 About().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)

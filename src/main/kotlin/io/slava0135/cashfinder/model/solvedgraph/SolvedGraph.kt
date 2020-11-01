@@ -20,6 +20,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
 
             val walls = solvedGraph.walls
             val grid = solvedGraph.grid
+
             val width = graph.width
             val height = graph.height
 
@@ -76,7 +77,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
         private val rowRegex = Regex("""([+]([-#]+|\s+))+[+]""") // +--+-+###+
         private val colRegex = Regex("""([+]([|#]|\s))+[+]""") // +#+|+#+
 
-        fun createFromLines(rawLines: List<String>): SolvedGraph {
+        private fun createFromLines(rawLines: List<String>): SolvedGraph {
 
             require(rawLines.isNotEmpty())
 
@@ -212,6 +213,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
             }
 
             generateOuterWalls(graph)
+
             return graph
         }
 

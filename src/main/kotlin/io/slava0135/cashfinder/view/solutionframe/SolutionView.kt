@@ -14,8 +14,10 @@ import tornadofx.*
 class SolutionView(private val graph: SolvedGraph) : Fragment() {
 
     override val root = scrollpane {
+
         vbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
         hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+
         content = gridpane {
             isPannable = true
             for (y in 0..graph.height * 2) {
@@ -76,17 +78,21 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
     private fun tile(pane: Pane, x: Int, y: Int) {
         pane.apply {
             label {
+
                 GridPane.setHalignment(this, HPos.CENTER)
                 prefHeight = AppConfig.GridPane.baseLength.toDouble()
                 prefWidth = AppConfig.GridPane.baseLength.toDouble()
                 alignment = Pos.CENTER
                 font = AppConfig.font
+
                 val node = graph.grid[x / 2][y / 2]
+
                 text = when {
                     node.isStart -> "S"
                     node.isEnd -> "F"
                     else -> node.value.toString()
                 }
+
                 background = if (node.isOnPath) {
                     Background(BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY))
                 } else {
