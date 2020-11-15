@@ -97,7 +97,7 @@ class EditingMenu: Fragment("Change Size") {
                     shortcut("Enter")
                     action {
                         try {
-                            val new = graph.value.offset(up = up, down = down, right = right, left = left, allWalls = allWalls, random = random)
+                            val new = graph.value.changeSize(up = up, down = down, right = right, left = left, allWalls = allWalls, random = random)
                             graph.value = new
                             close()
                         } catch(e: Exception) {

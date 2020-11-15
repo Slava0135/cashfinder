@@ -6,6 +6,7 @@ import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 
 class Solution(val nodes: List<Node>, val initial: Int, val score: Int?)
 
+// Class that stores solutions
 enum class Solver(val type: String, private val function: (Graph, Int) -> SolvedGraph) {
     BRUTEFORCE("Precise", ::bruteforce);
 
@@ -17,6 +18,7 @@ enum class Solver(val type: String, private val function: (Graph, Int) -> Solved
     override fun toString() = type
 }
 
+// Depth-first search
 private fun bruteforce(graph: Graph, initial: Int): SolvedGraph {
 
     var best: Pair<List<Node>, Int>? = null

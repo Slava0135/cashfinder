@@ -28,7 +28,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                 val generator = Random()
                 for (x in graph.grid.indices) {
                     for (y in graph.grid[0].indices) {
-                        graph.grid[x][y] =
+                        graph.grid[x][y] = // Random value from -randomLimit to randomLimit
                                 Node(generator.nextInt(AppConfig.Graph.randomLimit * 2 + 1) - AppConfig.Graph.randomLimit, Position(x, y))
                     }
                 }
@@ -101,7 +101,7 @@ class Graph private constructor(val width: Int, val height: Int) {
                             graph.walls[x + 1][y].left = true
                             graph.walls[x][y].right = true
                         }
-                        val value = buffer.replace(Regex("""\s"""), "")
+                        val value = buffer.replace(Regex("\\s"), "")
                         when {
                             value.toIntOrNull() != null -> graph.grid[x][y] = Node(value.toInt(), Position(x, y))
                             value == "S" -> {
@@ -177,12 +177,12 @@ class Graph private constructor(val width: Int, val height: Int) {
         val random = Random()
 
         val (initX, initY) = Pair(random.nextInt(width), random.nextInt(height))
-        val queue = ArrayDeque<Position>()
+        val queue = ArrayDeque<Position>()  // Path
         queue.add(Position(initX, initY))
 
         val isVisited = Array(width) { BooleanArray(height) }
         isVisited[initX][initY] = true
-
+        // Depth-first maze generation
         while (queue.isNotEmpty()) {
 
             val current = queue.first
@@ -225,7 +225,7 @@ class Graph private constructor(val width: Int, val height: Int) {
 
         for (x in 0 until width) {
             for (y in (x % 2) until height step(2)) {
-                if (x > 0 && random.nextInt(100) < 20) {
+                if (x > 0 && random.nextInt(100) < 20) {  // 20% chance that the wall will be removed
                     walls[x - 1][y].right = false
                     walls[x][y].left = false
                 }
@@ -329,7 +329,7 @@ class Graph private constructor(val width: Int, val height: Int) {
         return result
     }
 
-    fun offset(up: Int = 0, right: Int = 0, down: Int = 0, left: Int = 0, allWalls: Boolean = false, random: Boolean = false): Graph {
+    fun changeSize(up: Int = 0, right: Int = 0, down: Int = 0, left: Int = 0, allWalls: Boolean = false, random: Boolean = false): Graph {
 
         if (up + down + height < 1 || left + right + width < 1) throw IllegalStateException("Negative size values")
         if (up + down + height > AppConfig.Graph.sizeLimit || left + right + width > AppConfig.Graph.sizeLimit) throw IllegalStateException("Size limit reached")

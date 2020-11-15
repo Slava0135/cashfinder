@@ -17,7 +17,7 @@ class Menu: View() {
 
             item("New").action {
                 confirm("Are you sure?", "Current grid will be deleted!") {
-                    CreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+                    GraphCreationMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                 }
             }
 
@@ -73,7 +73,7 @@ class Menu: View() {
                 try {
                     if (graph.value == null) throw IllegalStateException("No Graph is found")
                     graph.value.validate()
-                    SolutionMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
+                    GraphSolutionMenu().openWindow(StageStyle.UTILITY, Modality.NONE, true, block = true, resizable = false)
                 } catch(e: Exception) {
                     error(e.localizedMessage)
                 }

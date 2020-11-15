@@ -24,7 +24,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
             val width = graph.width
             val height = graph.height
 
-            for (x in 0 until width) {
+            for (x in 0 until width) { //////////////////////////
                 for (y in 0 until height) {
                     walls[x][y].apply {
                         if (graph.walls[x][y].up) up = SolvedWall.WallState.WALL
@@ -125,8 +125,8 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
             var endFound = false
 
             val graph = SolvedGraph(
-                    crosses.size - 1,
-                    lines.size / 2,
+                    crosses.size - 1, ///////////////
+                    lines.size / 2, /////////////////////
                     data[0].toInt(),
                     data[1].toInt(),
                     data[2].toInt()
@@ -159,7 +159,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
                             }
                         }
 
-                        val value = buffer.replace(Regex("""\s"""), "")
+                        val value = buffer.replace(Regex("\\s"), "")
                         when {
                             value.toIntOrNull() != null -> graph.grid[x][y] = SolvedNode(value.toInt())
                             value == "S" -> {
@@ -201,7 +201,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
                 x = 0
             }
 
-            for (i in 0 until graph.width) {
+            for (i in 0 until graph.width) { ///////////////////////////////
                 for (j in 0 until graph.height) {
                     if (graph.walls[j][i].up == SolvedWall.WallState.ON_PATH ||
                             graph.walls[j][i].down == SolvedWall.WallState.ON_PATH ||

@@ -5,6 +5,7 @@ import javafx.stage.FileChooser
 import tornadofx.*
 import java.io.File
 
+// Information about given solved graph
 class SolutionTotal(graph: SolvedGraph) : Fragment() {
 
     override val root = vbox {

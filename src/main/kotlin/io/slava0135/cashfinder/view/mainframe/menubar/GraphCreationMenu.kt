@@ -6,7 +6,7 @@ import io.slava0135.cashfinder.view.mainframe.graph
 import javafx.scene.control.TextField
 import tornadofx.*
 
-class CreationMenu: Fragment("New") {
+class GraphCreationMenu: Fragment("New") {
 
     var graphHeight: TextField by singleAssign()
     var graphWidth: TextField by singleAssign()

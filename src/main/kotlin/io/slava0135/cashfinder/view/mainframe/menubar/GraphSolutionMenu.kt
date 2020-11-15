@@ -8,7 +8,7 @@ import javafx.stage.Modality
 import javafx.stage.StageStyle
 import tornadofx.*
 
-class SolutionMenu: Fragment("Find a Solution") {
+class GraphSolutionMenu: Fragment("Find a Solution") {
 
     private val comboBox = combobox<Solver> {
         items.setAll(*Solver.values())

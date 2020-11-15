@@ -35,13 +35,13 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
                             rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseWidth) { fill = Color.BLACK }
                         }
                         y % 2 == 0 -> {
-                            hWall(this, x, y)
+                            newHorizontalWall(this, x, y)
                         }
                         x % 2 == 0 -> {
-                            vWall(this, x, y)
+                            newVerticalWall(this, x, y)
                         }
                         else -> {
-                            tile(this, x, y)
+                            newTile(this, x, y)
                         }
                     }
                 }
@@ -49,7 +49,7 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
         }
     }
 
-    private fun hWall(pane: Pane, x: Int, y: Int) {
+    private fun newHorizontalWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
             rectangle(width = AppConfig.GridPane.baseLength, height = AppConfig.GridPane.baseWidth).apply {
                 fill = when {
@@ -62,7 +62,7 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
         }
     }
 
-    private fun vWall(pane: Pane, x: Int, y: Int) {
+    private fun newVerticalWall(pane: Pane, x: Int, y: Int) {
         pane.apply {
             rectangle(width = AppConfig.GridPane.baseWidth, height = AppConfig.GridPane.baseLength).apply {
                 fill = when {
@@ -75,7 +75,7 @@ class SolutionView(private val graph: SolvedGraph) : Fragment() {
         }
     }
 
-    private fun tile(pane: Pane, x: Int, y: Int) {
+    private fun newTile(pane: Pane, x: Int, y: Int) {
         pane.apply {
             label {
 
