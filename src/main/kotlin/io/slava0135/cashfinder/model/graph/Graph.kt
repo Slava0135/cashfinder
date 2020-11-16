@@ -44,7 +44,7 @@ class Graph private constructor(val width: Int, val height: Int) {
 
         fun load(file: File): Graph = createFromLines(file.readLines())
 
-        private fun createFromLines(lines: List<String>): Graph {
+        fun createFromLines(lines: List<String>): Graph {
 
             require(lines.size > 2 && lines[0].length > 2)
             //checking lines lengths
