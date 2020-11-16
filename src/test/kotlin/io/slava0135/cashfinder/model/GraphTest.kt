@@ -98,6 +98,10 @@ internal class GraphTest {
 
     @Test
     fun changeSize() {
+        val graph = getGraph("/changesize/input.csh")
 
+        assertEquals(graph.changeSize(right = 3, left = 3).toString(), getGraph("/changesize/output1.csh").toString())
+
+        assertEquals(graph.changeSize(up = - 2, right = 1).toString(), getGraph("/changesize/output2.csh").toString())
     }
 }

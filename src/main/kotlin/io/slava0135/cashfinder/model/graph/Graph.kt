@@ -335,6 +335,9 @@ class Graph private constructor(val width: Int, val height: Int) {
         if (up + down + height > AppConfig.Graph.sizeLimit || left + right + width > AppConfig.Graph.sizeLimit) throw IllegalStateException("Size limit reached")
 
         val newGraph = createEmpty(left + right + width, up + down + height, random)
+        newGraph.start = start
+        newGraph.end = end
+
         if (allWalls) newGraph.generateAllWalls()
 
         for (col in max(0, -left) until min(width, width + right)) {
