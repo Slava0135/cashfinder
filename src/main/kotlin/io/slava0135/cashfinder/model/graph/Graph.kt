@@ -358,10 +358,10 @@ class Graph private constructor(val width: Int, val height: Int) {
                     newGraph.walls[newX + 1][newY].left = true
                 }
                 newGraph.walls[newX][newY].apply {
-                    if (!this.up) this.up = walls[col][row].up
-                    if (!this.down) this.down = walls[col][row].down
-                    if (!this.right) this.right = walls[col][row].right
-                    if (!this.left) this.left = walls[col][row].left
+                    this.up = walls[col][row].up
+                    this.down = walls[col][row].down
+                    this.right = walls[col][row].right
+                    this.left = walls[col][row].left
                 }
             }
         }

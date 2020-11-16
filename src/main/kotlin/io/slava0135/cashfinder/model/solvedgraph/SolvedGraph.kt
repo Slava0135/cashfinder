@@ -77,14 +77,12 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
         private val rowRegex = Regex("""([+]([-#]+|\s+))+[+]""") // +--+-+###+
         private val colRegex = Regex("""([+]([|#]|\s))+[+]""") // +#+|+#+
 
-        private fun createFromLines(rawLines: List<String>): SolvedGraph {
+        fun createFromLines(rawLines: List<String>): SolvedGraph {
 
             require(rawLines.isNotEmpty())
 
             val data = rawLines.first().split(";")
             val lines = rawLines.drop(1)
-
-            require(lines.size > 2 && lines[1].length > 2)
 
             //checking lines lengths
             if (lines.any { it.length != lines.first().length })
@@ -125,11 +123,11 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
             var endFound = false
 
             val graph = SolvedGraph(
-                    crosses.size - 1, ///////////////
-                    lines.size / 2, /////////////////////
-                    data[0].toInt(),
-                    data[1].toInt(),
-                    data[2].toInt()
+                    crosses.size - 1, // +-+-+ width is 2 while amount of crosses is 3
+                    lines.size / 2, // every second line is for values
+                    data[0].toInt(), // initial value
+                    data[1].toInt(), // score
+                    data[2].toInt() // path length
             )
 
             val len = lines[0].length
@@ -201,13 +199,13 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
                 x = 0
             }
 
-            for (i in 0 until graph.width) { ///////////////////////////////
+            for (i in 0 until graph.width) { // Finding visited rooms
                 for (j in 0 until graph.height) {
-                    if (graph.walls[j][i].up == SolvedWall.WallState.ON_PATH ||
-                            graph.walls[j][i].down == SolvedWall.WallState.ON_PATH ||
-                            graph.walls[j][i].right == SolvedWall.WallState.ON_PATH ||
-                            graph.walls[j][i].left == SolvedWall.WallState.ON_PATH) {
-                        graph.grid[j][i].isOnPath = true
+                    if (graph.walls[i][j].up == SolvedWall.WallState.ON_PATH ||
+                            graph.walls[i][j].down == SolvedWall.WallState.ON_PATH ||
+                            graph.walls[i][j].right == SolvedWall.WallState.ON_PATH ||
+                            graph.walls[i][j].left == SolvedWall.WallState.ON_PATH) {
+                        graph.grid[i][j].isOnPath = true
                     }
                 }
             }

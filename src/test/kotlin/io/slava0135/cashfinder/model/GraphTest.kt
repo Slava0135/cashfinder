@@ -1,6 +1,7 @@
 package io.slava0135.cashfinder.model
 
-import io.slava0135.cashfinder.model.graph.Graph.Factory.createFromLines
+import io.slava0135.cashfinder.model.graph.Graph
+import io.slava0135.cashfinder.model.solvedgraph.SolvedGraph
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.test.*
@@ -8,14 +9,18 @@ import java.io.File
 
 internal class GraphTest {
 
-    fun getGraph(name: String) = createFromLines(getText(name))
+    fun getGraph(name: String) = Graph.createFromLines(getText(name))
+    fun getSolvedGraph(name: String) = SolvedGraph.createFromLines(getText(name))
     fun getText(name: String) = {}.javaClass.getResource(name).readText().split(Regex("""\n"""))
+
     fun File.parse() = this.readText().split(Regex("""\n"""))
 
     @Test
     fun solve() {
-        //var lines = {}.javaClass.getResource("/pathfinding/test1.csh").readText().split(Regex("""\n"""))
-        //println(Graph.createFromLines(lines).solve().path)
+        assertEquals(32, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/simple.csh"), 0).score)
+        assertEquals(34, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/all.csh"), 0).score)
+        assertEquals(7, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/money.csh"), 0).score)
+        assertEquals(12, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/money.csh"), 1).score)
     }
 
     @Test
@@ -37,13 +42,18 @@ internal class GraphTest {
             graph = getGraph("/io/IOtest3.csh")
             graph.save(File(t))
             assertEquals(File(t).parse(), getText("/io/IOtest3.csh"))
+
+            val solvedGraph = getSolvedGraph("/io/IOtest4.sol")
+            solvedGraph.save(File(t))
+            assertEquals(File(t).parse(), getText("/io/IOtest4.sol"))
+
         } finally {
             File(t).delete()
         }
     }
 
     @Test
-    fun validate() {
+    fun validateGraph() {
         assertFailsWith<Exception> {
             getGraph("/validation/empty.csh")
         }
@@ -62,5 +72,32 @@ internal class GraphTest {
         assertFailsWith<Exception> {
             getGraph("/validation/offset.csh")
         }
+    }
+
+    @Test
+    fun validateSolvedGraph() {
+        assertFailsWith<Exception> {
+            getSolvedGraph("/validation/emptyS.sol")
+        }
+        assertFailsWith<Exception> {
+            getSolvedGraph("/validation/invalidvalueS.sol")
+        }
+        assertFailsWith<Exception> {
+            getSolvedGraph("/validation/missingouterwallsS.sol")
+        }
+        assertFailsWith<Exception> {
+            getSolvedGraph("/validation/nofinishS.sol")
+        }
+        assertFailsWith<Exception> {
+            getSolvedGraph("/validation/nostartS.sol")
+        }
+        assertFailsWith<Exception> {
+            getSolvedGraph("/validation/offsetS.sol")
+        }
+    }
+
+    @Test
+    fun changeSize() {
+
     }
 }
