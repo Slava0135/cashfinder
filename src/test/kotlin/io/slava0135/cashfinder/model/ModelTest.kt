@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.*
 import java.io.File
 
-internal class GraphTest {
+internal class ModelTest {
 
     fun getGraph(name: String) = Graph.createFromLines(getText(name))
     fun getSolvedGraph(name: String) = SolvedGraph.createFromLines(getText(name))

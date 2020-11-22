@@ -24,7 +24,7 @@ class SolvedGraph(val width: Int, val height: Int, val initial: Int, val score: 
             val width = graph.width
             val height = graph.height
 
-            for (x in 0 until width) { //////////////////////////
+            for (x in 0 until width) { // Wall.true -> SolvedWall.Wall translation (3 values instead of 2)
                 for (y in 0 until height) {
                     walls[x][y].apply {
                         if (graph.walls[x][y].up) up = SolvedWall.WallState.WALL
