@@ -17,9 +17,14 @@ internal class ModelTest {
 
     @Test
     fun solve() {
+        //simple test, no initial money, 32 is max possible score
         assertEquals(32, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/simple.csh"), 0).score)
+        //algorithm has to traverse through all rooms, no initial money, 34 is max possible score
         assertEquals(34, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/all.csh"), 0).score)
+        //amount of initial money matters
+        //no initial money, 7 is max possible score
         assertEquals(7, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/money.csh"), 0).score)
+        //now with initial money - 12 is max possible score instead of 7
         assertEquals(12, Solver.BRUTEFORCE.solve(getGraph("/pathfinding/money.csh"), 1).score)
     }
 
@@ -27,7 +32,7 @@ internal class ModelTest {
     fun testIO() {
 
         val t = "temp.txt"
-
+        //testing if input file's content equals output file's content for both solved and data graphs
         try {
             File(t).createNewFile()
 
@@ -54,6 +59,7 @@ internal class ModelTest {
 
     @Test
     fun validateGraph() {
+        //invalid file format
         assertFailsWith<Exception> {
             getGraph("/validation/empty.csh")
         }
@@ -76,6 +82,7 @@ internal class ModelTest {
 
     @Test
     fun validateSolvedGraph() {
+        //invalid file format
         assertFailsWith<Exception> {
             getSolvedGraph("/validation/emptyS.sol")
         }
@@ -99,9 +106,9 @@ internal class ModelTest {
     @Test
     fun changeSize() {
         val graph = getGraph("/changesize/input.csh")
-
+        //add 3 columns on the right and 3 columns on the left
         assertEquals(graph.changeSize(right = 3, left = 3).toString(), getGraph("/changesize/output1.csh").toString())
-
+        //remove 2 rows from the top and add 1 column on the right
         assertEquals(graph.changeSize(up = - 2, right = 1).toString(), getGraph("/changesize/output2.csh").toString())
     }
 }
